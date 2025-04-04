@@ -178,47 +178,75 @@ Action< CTFBot > *CTFBotScenarioMonitor::DesiredScenarioAndClassAction( CTFBot *
 
 	if ( TFGameRules()->IsMannVsMachineMode() )
 	{
-		if ( me->IsPlayerClass( TF_CLASS_SPY ) )
-		{
-			return new CTFBotSpyLeaveSpawnRoom;
-		}
+		if (me->GetTeamNumber() != TF_TEAM_RED) {
 
-		if ( me->IsPlayerClass( TF_CLASS_MEDIC ) )
-		{
-			// if I'm being healed by another medic, I should do something else other than healing
-			bool bIsBeingHealedByAMedic = false;
-			int nNumHealers = me->m_Shared.GetNumHealers();
-			for ( int i=0; i<nNumHealers; ++i )
+			if (me->IsPlayerClass(TF_CLASS_SPY))
 			{
-				CBaseEntity *pHealer = me->m_Shared.GetHealerByIndex(i);
-				if ( pHealer && pHealer->IsPlayer() )
+				return new CTFBotSpyLeaveSpawnRoom;
+			}
+
+			if (me->IsPlayerClass(TF_CLASS_MEDIC))
+			{
+				// if I'm being healed by another medic, I should do something else other than healing
+				bool bIsBeingHealedByAMedic = false;
+				int nNumHealers = me->m_Shared.GetNumHealers();
+				for (int i = 0; i < nNumHealers; ++i)
 				{
-					bIsBeingHealedByAMedic = true;
-					break;
+					CBaseEntity* pHealer = me->m_Shared.GetHealerByIndex(i);
+					if (pHealer && pHealer->IsPlayer())
+					{
+						bIsBeingHealedByAMedic = true;
+						break;
+					}
+				}
+
+				if (!bIsBeingHealedByAMedic)
+				{
+					return new CTFBotMedicHeal;
 				}
 			}
 
-			if ( !bIsBeingHealedByAMedic )
+			if (me->IsPlayerClass(TF_CLASS_ENGINEER))
+			{
+				return new CTFBotMvMEngineerIdle;
+			}
+
+			// NOTE: Snipers are intentionally left out so they go after the flag. Actual sniping behavior is done as a mission.
+
+			if (me->HasAttribute(CTFBot::AGGRESSIVE))
+			{
+				// push for the point first, then attack
+				return new CTFBotPushToCapturePoint(new CTFBotFetchFlag);
+			}
+
+			// capture the flag
+			return new CTFBotFetchFlag;
+		}
+		else {
+
+
+			if (me->IsPlayerClass(TF_CLASS_SNIPER))
+			{
+				return new CTFBotSniperLurk;
+			}
+
+			if (me->IsPlayerClass(TF_CLASS_SPY))
+			{
+				return new CTFBotSpyInfiltrate;
+			}
+
+			if (me->IsPlayerClass(TF_CLASS_MEDIC))
 			{
 				return new CTFBotMedicHeal;
 			}
+
+			if (me->IsPlayerClass(TF_CLASS_ENGINEER))
+			{
+				return new CTFBotEngineerBuild;
+			}
+
+			return new CTFBotSeekAndDestroy;
 		}
-
-		if ( me->IsPlayerClass( TF_CLASS_ENGINEER ) )
-		{
-			return new CTFBotMvMEngineerIdle;
-		}
-
-		// NOTE: Snipers are intentionally left out so they go after the flag. Actual sniping behavior is done as a mission.
-
-		if ( me->HasAttribute( CTFBot::AGGRESSIVE ) )
-		{
-			// push for the point first, then attack
-			return new CTFBotPushToCapturePoint( new CTFBotFetchFlag );
-		}
-
-		// capture the flag
-		return new CTFBotFetchFlag;
 	}
 
 	if ( me->IsPlayerClass( TF_CLASS_SPY ) )

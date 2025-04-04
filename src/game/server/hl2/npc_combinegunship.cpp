@@ -220,7 +220,7 @@ public:
 	~CNPC_CombineGunship( void );
 
 	DECLARE_DATADESC();
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 	DEFINE_CUSTOM_AI;
 
 	void	PlayPatrolLoop( void );
@@ -409,11 +409,11 @@ private:
 };
 
 LINK_ENTITY_TO_CLASS( npc_combinegunship, CNPC_CombineGunship );
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CNPC_CombineGunship, DT_CombineGunship )
 	SendPropVector(SENDINFO(m_vecHitPos), -1, SPROP_COORD),
 END_SEND_TABLE()
-*/
+
 
 BEGIN_DATADESC( CNPC_CombineGunship )
 

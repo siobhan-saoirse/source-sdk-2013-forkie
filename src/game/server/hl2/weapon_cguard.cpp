@@ -26,7 +26,7 @@ class CTEConcussiveExplosion : public CTEParticleSystem
 {
 public:
 	DECLARE_CLASS( CTEConcussiveExplosion, CTEParticleSystem );
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 	CTEConcussiveExplosion( const char *name );
 	virtual	~CTEConcussiveExplosion( void );
@@ -36,14 +36,14 @@ public:
 	CNetworkVar( int, m_nRadius );
 	CNetworkVar( int, m_nMagnitude );
 };
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CTEConcussiveExplosion, DT_TEConcussiveExplosion )
 	SendPropVector( SENDINFO(m_vecNormal), -1, SPROP_COORD ),
 	SendPropFloat( SENDINFO(m_flScale), 0, SPROP_NOSCALE ),
 	SendPropInt( SENDINFO(m_nRadius), 32, SPROP_UNSIGNED ),
 	SendPropInt( SENDINFO(m_nMagnitude), 32, SPROP_UNSIGNED ),
 END_SEND_TABLE()
-*/
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor

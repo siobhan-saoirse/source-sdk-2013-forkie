@@ -1,6 +1,6 @@
 "GameInfo"
 {
-	game					"Frog Fortress 2"
+	game					"Siobhan's Wacky MvM"
 	type 					multiplayer_only
 	nomodels				1
 	nohimodel 				1
@@ -32,7 +32,7 @@
 			// folder.
 			//
 			// Note that this folder is scanned only when the game is booted.
-			game+mod	mod_tf/custom/*
+			game+mod	siobhans_mvm/custom/*
 			// Enable this if you want to load your TF custom content.
 			//game+mod	|appid_440|tf/custom/*
 
@@ -53,6 +53,7 @@
 			game+mod			|appid_440|tf/tf2_sound_vo_english.vpk
 			game+mod			|appid_440|tf/tf2_sound_misc.vpk
 			game+mod+vgui		|appid_440|tf/tf2_misc.vpk
+
 			game				|appid_243750|hl2/hl2_textures.vpk
 			game				|appid_243750|hl2/hl2_sound_vo_english.vpk
 			game				|appid_243750|hl2/hl2_sound_misc.vpk
@@ -61,6 +62,13 @@
 
 			// Last, mount in shared HL2 and TF2 loose files
 			game				|appid_440|tf
+			game			|appid_220|hl2
+			game			|appid_380|episodic			
+			game			|appid_420|ep2
+			game			|appid_380|episodic/ep1_sound_vo_english.vpk
+			game			|appid_380|episodic/ep1_pak.vpk
+			game			|appid_420|ep2/ep2_sound_vo_english.vpk
+			game			|appid_420|ep2/ep2_pak.vpk
 			game				|appid_243750|hl2
 			platform			|appid_243750|platform
 
@@ -75,7 +83,7 @@
 			// packed up in the .bsp file so that it will be mounted as a map search pack.
 			// The map search pack is mounted at the top of the search path list,
 			// but only while you are connected that server and on that map.
-			game+download		mod_tf/download
+			game+download		siobhans_mvm/download
 		}
 	}
 }

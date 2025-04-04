@@ -22,7 +22,7 @@ enum
 class CAlyxEmpEffect : public CBaseEntity
 {
 	DECLARE_CLASS( CAlyxEmpEffect, CBaseEntity );
-	//DECLARE_SERVERCLASS();
+	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 public:

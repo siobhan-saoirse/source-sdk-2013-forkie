@@ -202,13 +202,13 @@ BEGIN_DATADESC( CNPC_Vortigaunt )
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS( npc_vortigaunt, CNPC_Vortigaunt );
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CNPC_Vortigaunt, DT_NPC_Vortigaunt )
 	SendPropTime( SENDINFO (m_flBlueEndFadeTime ) ),
 	SendPropBool( SENDINFO( m_bIsBlue )),
 	SendPropBool( SENDINFO ( m_bIsBlack ) ),
 END_SEND_TABLE()
-*/
+
 // for special behavior with rollermines
 static bool IsRoller( CBaseEntity *pRoller )
 {
@@ -2790,13 +2790,12 @@ void CNPC_Vortigaunt::OnUpdateShotRegulator( void )
 	GetShotRegulator()->SetRestInterval( 2.0f, 2.0f );	
 }
 
-/*
-IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )
-	SendPropFloat( SENDINFO(m_flFadeOutTime), 0, SPROP_NOSCALE),	
-	SendPropBool( SENDINFO(m_bFadeOut) ),
-	SendPropFloat( SENDINFO(m_flScale), 0, SPROP_NOSCALE),
-END_SEND_TABLE()
-*/
+//IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )
+	//SendPropFloat( SENDINFO(m_flFadeOutTime), 0, SPROP_NOSCALE),	
+	//SendPropBool( SENDINFO(m_bFadeOut) ),
+	//SendPropFloat( SENDINFO(m_flScale), 0, SPROP_NOSCALE),
+//END_SEND_TABLE()
+
 
 //------------------------------------------------------------------------------
 //
@@ -3060,11 +3059,11 @@ BEGIN_DATADESC( CVortigauntChargeToken )
 	DEFINE_ENTITYFUNC( SeekThink ),
 	DEFINE_ENTITYFUNC( SeekTouch ),
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CVortigauntChargeToken, DT_VortigauntChargeToken )
 	SendPropBool( SENDINFO(m_bFadeOut) ),
 END_SEND_TABLE()
-*/
+
 
 CVortigauntChargeToken::CVortigauntChargeToken( void ) :
 m_hTarget( NULL )
@@ -3292,11 +3291,11 @@ LINK_ENTITY_TO_CLASS( vort_effect_dispel, CVortigauntEffectDispel );
 BEGIN_DATADESC( CVortigauntEffectDispel )
 	DEFINE_FIELD( m_bFadeOut, FIELD_BOOLEAN ),
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CVortigauntEffectDispel, DT_VortigauntEffectDispel )
 	SendPropBool( SENDINFO(m_bFadeOut) ),
 END_SEND_TABLE()
-*/
+
 CVortigauntEffectDispel::CVortigauntEffectDispel( void )
 {
 	m_bFadeOut = false;
@@ -3379,7 +3378,7 @@ private:
 	CNetworkVar( float, m_flRadius );
 	CNetworkVar( float, m_flScaleTime );
 
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();	
 };
 
@@ -3393,12 +3392,12 @@ BEGIN_DATADESC( CFleshEffectTarget )
 	DEFINE_INPUTFUNC( FIELD_VECTOR, "SetRadius", InputSetRadius ),
 
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CFleshEffectTarget, DT_FleshEffectTarget )
 	SendPropFloat( SENDINFO(m_flRadius), 0, SPROP_NOSCALE),
 	SendPropFloat( SENDINFO(m_flScaleTime), 0, SPROP_NOSCALE),
 END_SEND_TABLE()
-*/
+
 
 void CFleshEffectTarget::InputSetRadius( inputdata_t &inputData )
 {

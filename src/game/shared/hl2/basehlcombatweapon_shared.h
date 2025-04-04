@@ -30,7 +30,7 @@ private:
 
 	DECLARE_CLASS( CBaseHLCombatWeapon, CBaseCombatWeapon );
 public:
-	//DECLARE_NETWORKCLASS();
+	DECLARE_NETWORKCLASS();
 	DECLARE_PREDICTABLE();
 
 	virtual bool	WeaponShouldBeLowered( void );
@@ -42,6 +42,7 @@ public:
 	virtual bool	Holster( CBaseCombatWeapon *pSwitchingTo );
 	virtual void	WeaponIdle( void );
 
+	virtual void 	DefaultTouch(CBaseEntity* pOther) { return; }
 	virtual void	AddViewmodelBob( CBaseViewModel *viewmodel, Vector &origin, QAngle &angles );
 	virtual	float	CalcViewmodelBob( void );
 

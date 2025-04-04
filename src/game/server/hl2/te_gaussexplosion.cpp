@@ -18,7 +18,7 @@ class CTEGaussExplosion : public CTEParticleSystem
 {
 public:
 	DECLARE_CLASS( CTEGaussExplosion, CTEParticleSystem );
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 					CTEGaussExplosion( const char *name );
 	virtual			~CTEGaussExplosion( void );
@@ -39,12 +39,12 @@ CTEGaussExplosion::CTEGaussExplosion( const char *name ) : BaseClass( name )
 CTEGaussExplosion::~CTEGaussExplosion( void )
 {
 }
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CTEGaussExplosion, DT_TEGaussExplosion )
 	SendPropInt( SENDINFO(m_nType), 2, SPROP_UNSIGNED ),
 	SendPropVector( SENDINFO(m_vecDirection), -1, SPROP_COORD ),
 END_SEND_TABLE()
-*/
+
 
 static CTEGaussExplosion g_TEGaussExplosion( "GaussExplosion" );
 

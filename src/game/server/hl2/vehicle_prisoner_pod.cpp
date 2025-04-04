@@ -77,7 +77,7 @@ class CPropVehiclePrisonerPod : public CPhysicsProp, public IDrivableVehicle
 
 public:
 	DECLARE_DATADESC();
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 	CPropVehiclePrisonerPod( void )
 	{
@@ -213,14 +213,14 @@ BEGIN_DATADESC( CPropVehiclePrisonerPod )
 
 END_DATADESC()
 
-/*
+
 IMPLEMENT_SERVERCLASS_ST(CPropVehiclePrisonerPod, DT_PropVehiclePrisonerPod)
 	SendPropEHandle(SENDINFO(m_hPlayer)),
 	SendPropBool(SENDINFO(m_bEnterAnimOn)),
 	SendPropBool(SENDINFO(m_bExitAnimOn)),
 	SendPropVector(SENDINFO(m_vecEyeExitEndpoint), -1, SPROP_COORD),
 END_SEND_TABLE();
-*/
+
 
 //------------------------------------------------
 // Precache

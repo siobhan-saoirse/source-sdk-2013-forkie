@@ -78,7 +78,7 @@ class CPropAirboat : public CPropVehicleDriveable
 
 public:
 
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 	// CPropVehicle
@@ -265,7 +265,7 @@ private:
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_nWaterLevel );
 
 };
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CPropAirboat, DT_PropAirboat )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
 	SendPropInt( SENDINFO( m_nAmmoCount ), 9 ),
@@ -273,7 +273,7 @@ IMPLEMENT_SERVERCLASS_ST( CPropAirboat, DT_PropAirboat )
 	SendPropInt( SENDINFO( m_nWaterLevel ) ),
 	SendPropVector( SENDINFO( m_vecPhysVelocity ) ),
 END_SEND_TABLE();
-*/
+
 LINK_ENTITY_TO_CLASS( prop_vehicle_airboat, CPropAirboat );
 
 BEGIN_DATADESC( CPropAirboat )

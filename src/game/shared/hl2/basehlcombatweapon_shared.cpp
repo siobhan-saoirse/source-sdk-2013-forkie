@@ -14,15 +14,15 @@
 
 LINK_ENTITY_TO_CLASS( basehlcombatweapon, CBaseHLCombatWeapon );
 
-//IMPLEMENT_NETWORKCLASS_ALIASED( BaseHLCombatWeapon , DT_BaseHLCombatWeapon )
+IMPLEMENT_NETWORKCLASS_ALIASED( BaseHLCombatWeapon , DT_BaseHLCombatWeapon )
 
-//BEGIN_NETWORK_TABLE( CBaseHLCombatWeapon , DT_BaseHLCombatWeapon )
+BEGIN_NETWORK_TABLE( CBaseHLCombatWeapon , DT_BaseHLCombatWeapon )
 #if !defined( CLIENT_DLL )
 //	SendPropInt( SENDINFO( m_bReflectViewModelAnimations ), 1, SPROP_UNSIGNED ),
 #else
 //	RecvPropInt( RECVINFO( m_bReflectViewModelAnimations ) ),
 #endif
-//END_NETWORK_TABLE()
+END_NETWORK_TABLE()
 
 
 #if !defined( CLIENT_DLL )

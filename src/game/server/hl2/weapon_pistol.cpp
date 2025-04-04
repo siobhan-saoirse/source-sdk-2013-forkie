@@ -42,7 +42,7 @@ public:
 
 	CWeaponHL2Pistol(void);
 
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 	void	Precache( void );
 	void	ItemPostFrame( void );
@@ -113,10 +113,10 @@ private:
 	int		m_nNumShotsFired;
 };
 
-/*
+
 IMPLEMENT_SERVERCLASS_ST(CWeaponHL2Pistol, DT_WeaponHL2Pistol)
 END_SEND_TABLE()
-*/
+
 
 LINK_ENTITY_TO_CLASS( weapon_pistol, CWeaponHL2Pistol );
 PRECACHE_WEAPON_REGISTER( weapon_pistol );

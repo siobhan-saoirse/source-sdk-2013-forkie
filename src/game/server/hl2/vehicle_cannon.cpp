@@ -85,7 +85,7 @@ class CPropCannon : public CBaseProp, public IDrivableVehicle
 	DECLARE_CLASS( CPropCannon, CBaseProp );
 public:
 	DECLARE_DATADESC();
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 	CPropCannon( void )
 	{
@@ -205,14 +205,14 @@ BEGIN_DATADESC( CPropCannon )
 	DEFINE_FIELD( m_flNextAttackTime, FIELD_TIME ),
 
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST(CPropCannon, DT_PropCannon)
 	SendPropEHandle(SENDINFO(m_hPlayer)),
 	SendPropBool(SENDINFO(m_bEnterAnimOn)),
 	SendPropBool(SENDINFO(m_bExitAnimOn)),
 	SendPropVector(SENDINFO(m_vecEyeExitEndpoint), -1, SPROP_COORD),
 END_SEND_TABLE();
-*/
+
 //------------------------------------------------
 // Precache
 //------------------------------------------------

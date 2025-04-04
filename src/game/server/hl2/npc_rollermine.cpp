@@ -174,7 +174,7 @@ enum rollingsoundstate_t { ROLL_SOUND_NOT_READY = 0, ROLL_SOUND_OFF, ROLL_SOUND_
 class CNPC_RollerMine : public CNPCBaseInteractive<CAI_BaseNPC>, public CDefaultPlayerPickupVPhysics
 {
 	DECLARE_CLASS( CNPC_RollerMine, CNPCBaseInteractive<CAI_BaseNPC> );
-	//DECLARE_SERVERCLASS();
+	 DECLARE_SERVERCLASS();
 
 public:
 
@@ -421,14 +421,14 @@ BEGIN_DATADESC( CNPC_RollerMine )
 	DEFINE_BASENPCINTERACTABLE_DATADESC(),
 
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CNPC_RollerMine, DT_RollerMine )
 	SendPropInt(SENDINFO(m_bIsOpen), 1, SPROP_UNSIGNED ),
 	SendPropFloat(SENDINFO(m_flActiveTime), 0, SPROP_NOSCALE ),
 	SendPropInt(SENDINFO(m_bHackedByAlyx), 1, SPROP_UNSIGNED ),
 	SendPropInt(SENDINFO(m_bPowerDown), 1, SPROP_UNSIGNED ),
 END_SEND_TABLE()
-*/
+
 bool NPC_Rollermine_IsRollermine( CBaseEntity *pEntity )
 {
 	CNPC_RollerMine *pRoller = dynamic_cast<CNPC_RollerMine *>(pEntity);

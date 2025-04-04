@@ -5157,6 +5157,8 @@ void CAI_BaseNPC::GiveWeapon( string_t iszWeaponName )
 
 	// Handle this case
 	OnGivenWeapon( pWeapon );
+
+	pWeapon->MarkAttachedEntityAsValidated();
 }
 
 //-----------------------------------------------------------------------------

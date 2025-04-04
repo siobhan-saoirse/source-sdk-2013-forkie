@@ -229,14 +229,14 @@ BEGIN_DATADESC( CPropCombineBall )
 	DEFINE_INPUTFUNC( FIELD_VOID, "Socketed", InputSocketed ),
 
 END_DATADESC()
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CPropCombineBall, DT_PropCombineBall )
 	SendPropBool( SENDINFO( m_bEmit ) ),
 	SendPropFloat( SENDINFO( m_flRadius ), 0, SPROP_NOSCALE ),
 	SendPropBool( SENDINFO( m_bHeld ) ),
 	SendPropBool( SENDINFO( m_bLaunched ) ),
 END_SEND_TABLE()
-*/
+
 
 //-----------------------------------------------------------------------------
 // Gets at the spawner

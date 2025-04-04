@@ -4691,21 +4691,21 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	if ( !pBobState )
 		return;
 
-	Vector	forward, right;
-	AngleVectors( angles, &forward, &right, NULL );
+	Vector	forward, right, up;
+	AngleVectors( angles, &forward, &right, &up );
 
 	// Apply bob, but scaled down to 40%
-	VectorMA( origin, pBobState->m_flVerticalBob * 0.4f, forward, origin );
+	VectorMA(origin, pBobState->m_flVerticalBob * 0.4f, forward, origin);
 
 	// Z bob a bit more
 	origin[2] += pBobState->m_flVerticalBob * 0.1f;
 
 	// bob the angles
-	angles[ ROLL ]	+= pBobState->m_flVerticalBob * 0.5f;
-	angles[ PITCH ]	-= pBobState->m_flVerticalBob * 0.4f;
-	angles[ YAW ]	-= pBobState->m_flLateralBob  * 0.3f;
+	angles[ROLL] += pBobState->m_flVerticalBob * 0.5f;
+	angles[PITCH] -= pBobState->m_flVerticalBob * 0.4f;
+	angles[YAW] -= pBobState->m_flLateralBob * 0.3f;
 
-	VectorMA( origin, pBobState->m_flLateralBob * 0.2f, right, origin );
+//	VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
 }
 
 //-----------------------------------------------------------------------------

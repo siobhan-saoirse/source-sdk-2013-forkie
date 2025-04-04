@@ -62,8 +62,8 @@ CTFViewModel::~CTFViewModel()
 void DrawEconEntityAttachedModels( CBaseAnimating *pEnt, CEconEntity *pAttachedModelSource, const ClientModelRenderInfo_t *pInfo, int iMatchDisplayFlags );
 
 // TODO:  Turning this off by setting interp 0.0 instead of 0.1 for now since we have a timing bug to resolve
-ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.0", FCVAR_CLIENTDLL | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
-ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "5.0", FCVAR_CLIENTDLL | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+ConVar cl_wpn_sway_interp( "cl_wpn_sway_interp", "0.1", FCVAR_CLIENTDLL );
+ConVar cl_wpn_sway_scale( "cl_wpn_sway_scale", "1.6", FCVAR_CLIENTDLL );
 #endif
 
 //-----------------------------------------------------------------------------
@@ -82,40 +82,53 @@ void CTFViewModel::AddViewModelBob( CBasePlayer *owner, Vector& eyePosition, QAn
 #endif
 }
 
+ConVar sv_wpn_sway_pred_legacy("sv_wpn_sway_pred_legacy", "1", FCVAR_REPLICATED);
+
 void CTFViewModel::CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles )
 {
+	if (sv_wpn_sway_pred_legacy.GetBool())
+	{
+
 #ifdef CLIENT_DLL
-	if ( prediction->InPrediction() )
-	{
-		return;
-	}
+		if (prediction->InPrediction())
+		{
+			return;
+		}
 
-	if ( cl_wpn_sway_interp.GetFloat() <= 0.0f )
-	{
-		return;
-	}
+		if (cl_wpn_sway_interp.GetFloat() <= 0.0f)
+		{
+			return;
+		}
 
-	// Calculate our drift
-	Vector	forward, right, up;
-	AngleVectors( angles, &forward, &right, &up );
+		// Calculate our drift
+		Vector	forward, right, up;
+		AngleVectors(angles, &forward, &right, &up);
 
-	// Add an entry to the history.
-	m_vLagAngles = angles;
-	m_LagAnglesHistory.NoteChanged( gpGlobals->curtime, cl_wpn_sway_interp.GetFloat(), false );
+		// Add an entry to the history.
+		m_vLagAngles = angles;
+		m_LagAnglesHistory.NoteChanged(gpGlobals->curtime, cl_wpn_sway_interp.GetFloat(), false);
 
-	// Interpolate back 100ms.
-	m_LagAnglesHistory.Interpolate( gpGlobals->curtime, cl_wpn_sway_interp.GetFloat() );
+		// Interpolate back 100ms.
+		m_LagAnglesHistory.Interpolate(gpGlobals->curtime, cl_wpn_sway_interp.GetFloat());
 
-	// Now take the 100ms angle difference and figure out how far the forward vector moved in local space.
-	Vector vLaggedForward;
-	QAngle angleDiff = m_vLagAngles - angles;
-	AngleVectors( -angleDiff, &vLaggedForward, 0, 0 );
-	Vector vForwardDiff = Vector(1,0,0) - vLaggedForward;
+		// Now take the 100ms angle difference and figure out how far the forward vector moved in local space.
+		Vector vLaggedForward;
+		QAngle angleDiff = m_vLagAngles - angles;
+		AngleVectors(-angleDiff, &vLaggedForward, 0, 0);
+		Vector vForwardDiff = Vector(1, 0, 0) - vLaggedForward;
 
-	// Now offset the origin using that.
-	vForwardDiff *= cl_wpn_sway_scale.GetFloat();
-	origin += forward*vForwardDiff.x + right*-vForwardDiff.y + up*vForwardDiff.z;
+		// Now offset the origin using that.
+		vForwardDiff *= cl_wpn_sway_scale.GetFloat();
+		origin += forward * vForwardDiff.x + right * -vForwardDiff.y + up * vForwardDiff.z;
 #endif
+
+	}
+	else {
+
+#ifdef CLIENT_DLL
+		BaseClass::CalcViewModelLag(origin, angles, original_angles);
+#endif
+	}
 }
 
 #ifdef CLIENT_DLL

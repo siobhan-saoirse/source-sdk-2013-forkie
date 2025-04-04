@@ -2,10 +2,18 @@
 {
 	"ctf_2fort"
 	{
-		"viewed"		"5"
+		"viewed"		"8"
 	}
 	"mvm_decoy"
 	{
-		"viewed"		"1"
+		"viewed"		"15"
+	}
+	"mvm_black_mesa_v3"
+	{
+		"viewed"		"11"
+	}
+	"ep1_background02"
+	{
+		"viewed"		"2"
 	}
 }

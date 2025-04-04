@@ -15,10 +15,10 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CHLMachineGun, DT_HLMachineGun )
 END_SEND_TABLE()
-*/
+
 
 //=========================================================
 //	>> CHLSelectFireMachineGun
@@ -268,10 +268,10 @@ void CHLMachineGun::ItemPostFrame( void )
 	BaseClass::ItemPostFrame();
 }
 
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CHLSelectFireMachineGun, DT_HLSelectFireMachineGun )
 END_SEND_TABLE()
-*/
+
 
 
 //=========================================================

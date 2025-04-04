@@ -139,11 +139,11 @@ DEFINE_INPUTFUNC(FIELD_VOID, "FinishRemoveTauCannon", InputFinishRemoveTauCannon
 DEFINE_THINKFUNC(JeepSeagullThink),
 END_DATADESC()
 
-/*
+
 IMPLEMENT_SERVERCLASS_ST( CPropJeep, DT_PropJeep )
 	SendPropBool( SENDINFO( m_bHeadlightIsOn ) ),
 END_SEND_TABLE();
-*/
+
 
 // This is overriden for the episodic jeep
 LINK_ENTITY_TO_CLASS( prop_vehicle_jeep, CPropJeep );

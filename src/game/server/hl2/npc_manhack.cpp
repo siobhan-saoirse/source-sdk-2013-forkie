@@ -196,13 +196,13 @@ END_DATADESC()
 
 
 LINK_ENTITY_TO_CLASS( npc_manhack, CNPC_Manhack );
-/*
+
 IMPLEMENT_SERVERCLASS_ST(CNPC_Manhack, DT_NPC_Manhack)
 	SendPropIntWithMinusOneFlag	(SENDINFO(m_nEnginePitch1), 8 ),
 	SendPropFloat(SENDINFO(m_flEnginePitch1Time), 0, SPROP_NOSCALE),
 	SendPropIntWithMinusOneFlag(SENDINFO(m_nEnginePitch2), 8 )
 END_SEND_TABLE()
-*/
+
 
 
 //------------------------------------------------------------------------------
