@@ -14,11 +14,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponAlyxGun, DT_WeaponAlyxGun)
-END_SEND_TABLE()
+//IMPLEMENT_SERVERCLASS_ST(CWeaponAlyxGun, DT_WeaponAlyxGun)
+//END_SEND_TABLE()
 
-LINK_ENTITY_TO_CLASS( weapon_alyxgun, CWeaponAlyxGun );
-PRECACHE_WEAPON_REGISTER(weapon_alyxgun);
+//LINK_ENTITY_TO_CLASS( weapon_alyxgun, CWeaponAlyxGun );
+//PRECACHE_WEAPON_REGISTER(weapon_alyxgun);
 
 BEGIN_DATADESC( CWeaponAlyxGun )
 END_DATADESC()
@@ -219,7 +219,7 @@ void CWeaponAlyxGun::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool
 	else 
 	{
 		vecShootOrigin = pOperator->Weapon_ShootPosition();
- 		vecShootDir = npc->GetActualShootTrajectory( vecShootOrigin );
+		vecShootDir = npc->GetShootEnemyDir(vecShootOrigin);
 	}
 
 	WeaponSound( SINGLE_NPC );

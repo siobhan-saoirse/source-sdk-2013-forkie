@@ -105,14 +105,9 @@ void CPropVehicleViewController::EnterVehicle( CBasePlayer *pPlayer )
 	m_VehiclePhysics.GetVehicle()->OnVehicleEnter();
 
 	// Stop the player sprint and flashlight.
-	CHL2_Player *pHL2Player = dynamic_cast<CHL2_Player*>( pPlayer );
+	CBasePlayer *pHL2Player = dynamic_cast<CBasePlayer*>( pPlayer );
 	if ( pHL2Player )
 	{
-		if ( pHL2Player->IsSprinting() )
-		{
-			pHL2Player->StopSprinting();
-		}
-
 		if ( pHL2Player->FlashlightIsOn() )
 		{
 			pHL2Player->FlashlightTurnOff();

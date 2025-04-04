@@ -828,7 +828,7 @@ void CNPC_CeilingTurret::Shoot( const Vector &vecSrc, const Vector &vecDirToEnem
 
 	if ( GetEnemy() != NULL )
 	{
-		Vector vecDir = GetActualShootTrajectory( vecSrc );
+		Vector vecDir = GetShootEnemyDir( vecSrc );
 
 		info.m_vecSrc = vecSrc;
 		info.m_vecDirShooting = vecDir;

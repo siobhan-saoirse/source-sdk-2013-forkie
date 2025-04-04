@@ -62,7 +62,7 @@ BEGIN_DATADESC(CScriptIntro)
 	DEFINE_THINKFUNC( BlendComplete ),
 
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST( CScriptIntro, DT_ScriptIntro )
 	SendPropVector(SENDINFO(m_vecCameraView), -1, SPROP_COORD),
 	SendPropVector(SENDINFO(m_vecCameraViewAngles), -1, SPROP_COORD),
@@ -90,7 +90,7 @@ IMPLEMENT_SERVERCLASS_ST( CScriptIntro, DT_ScriptIntro )
 	SendPropFloat( SENDINFO( m_flFadeDuration ), 10, SPROP_ROUNDDOWN, 0.0f, 255.0 ),
 	SendPropEHandle(SENDINFO( m_hCameraEntity ) ),
 END_SEND_TABLE()
-
+*/
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------

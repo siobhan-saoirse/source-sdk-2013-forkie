@@ -1024,11 +1024,7 @@ void CPlayerPickupController::Init( CBasePlayer *pPlayer, CBaseEntity *pObject )
 		}
 	}
 
-	CHL2_Player *pOwner = (CHL2_Player *)ToBasePlayer( pPlayer );
-	if ( pOwner )
-	{
-		pOwner->EnableSprint( false );
-	}
+	CBasePlayer *pOwner = ToBasePlayer( pPlayer );
 
 	// If the target is debris, convert it to non-debris
 	if ( pObject->GetCollisionGroup() == COLLISION_GROUP_DEBRIS )
@@ -1084,11 +1080,7 @@ void CPlayerPickupController::Shutdown( bool bThrown )
 
 	if ( m_pPlayer )
 	{
-		CHL2_Player *pOwner = (CHL2_Player *)ToBasePlayer( m_pPlayer );
-		if ( pOwner )
-		{
-			pOwner->EnableSprint( true );
-		}
+		CBasePlayer *pOwner = ToBasePlayer( m_pPlayer );
 
 		m_pPlayer->SetUseEntity( NULL );
 		if ( m_pPlayer->GetActiveWeapon() )
@@ -1215,7 +1207,7 @@ class CWeaponPhysCannon : public CBaseHLCombatWeapon
 public:
 	DECLARE_CLASS( CWeaponPhysCannon, CBaseHLCombatWeapon );
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 	CWeaponPhysCannon( void );
@@ -1388,10 +1380,12 @@ protected:
 bool CWeaponPhysCannon::m_sbStaticPoseParamsLoaded = false;
 int CWeaponPhysCannon::m_poseActive = 0;
 
+/*
 IMPLEMENT_SERVERCLASS_ST(CWeaponPhysCannon, DT_WeaponPhysCannon)
 	SendPropBool( SENDINFO( m_bIsCurrentlyUpgrading ) ),
 	SendPropFloat( SENDINFO( m_flTimeForceView ) ),
 END_SEND_TABLE()
+*/
 
 LINK_ENTITY_TO_CLASS( weapon_physcannon, CWeaponPhysCannon );
 PRECACHE_WEAPON_REGISTER( weapon_physcannon );
@@ -2398,7 +2392,7 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 	if ( !pPhysics )
 		return false;
 
-	CHL2_Player *pOwner = (CHL2_Player *)ToBasePlayer( GetOwner() );
+	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 
 	m_bActive = true;
 	if( pOwner )
@@ -2425,13 +2419,6 @@ bool CWeaponPhysCannon::AttachObject( CBaseEntity *pObject, const Vector &vPosit
 		// NVNT set the players constant force to simulate holding mass
 		HapticSetConstantForce(pOwner,clamp(m_grabController.GetLoadWeight()*0.05,1,5)*Vector(0,-1,0));
 #endif
-		pOwner->EnableSprint( false );
-
-		float	loadWeight = ( 1.0f - GetLoadPercentage() );
-		float	maxSpeed = hl2_walkspeed.GetFloat() + ( ( hl2_normspeed.GetFloat() - hl2_walkspeed.GetFloat() ) * loadWeight );
-
-		//Msg( "Load perc: %f -- Movement speed: %f/%f\n", loadWeight, maxSpeed, hl2_normspeed.GetFloat() );
-		pOwner->SetMaxSpeed( maxSpeed );
 	}
 
 	// Don't drop again for a slight delay, in case they were pulling objects near them
@@ -2871,12 +2858,9 @@ void CWeaponPhysCannon::DetachObject( bool playSound, bool wasLaunched )
 	if ( m_bActive == false )
 		return;
 
-	CHL2_Player *pOwner = (CHL2_Player *)ToBasePlayer( GetOwner() );
+	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	if( pOwner != NULL )
 	{
-		pOwner->EnableSprint( true );
-		pOwner->SetMaxSpeed( hl2_normspeed.GetFloat() );
-		
 		if( wasLaunched )
 		{
 			pOwner->RumbleEffect( RUMBLE_357, 0, RUMBLE_FLAG_RESTART );
@@ -3106,13 +3090,6 @@ void CWeaponPhysCannon::DoEffectIdle( void )
 
 #ifdef HL2_EPISODIC
 			ForceDrop();
-
-			CHL2_Player *pPlayer = dynamic_cast<CHL2_Player*>( pOwner );
-
-			if ( pPlayer )
-			{
-				pPlayer->StartArmorReduction();
-			}
 #endif
 
 			CCitadelEnergyCore *pCore = static_cast<CCitadelEnergyCore*>( CreateEntityByName( "env_citadel_energy_core" ) );

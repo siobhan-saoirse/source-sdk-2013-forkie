@@ -19,7 +19,7 @@ class CEnvStarfield : public CBaseEntity
 {
 	DECLARE_CLASS( CEnvStarfield, CBaseEntity );
 public:
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 	virtual void Precache();
@@ -44,11 +44,12 @@ BEGIN_DATADESC( CEnvStarfield )
 	DEFINE_INPUTFUNC( FIELD_VOID, "TurnOff", InputTurnOff ),
 	DEFINE_INPUTFUNC( FIELD_FLOAT, "SetDensity", InputSetDensity ),
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST( CEnvStarfield, DT_EnvStarfield )
 	SendPropInt( SENDINFO(m_bOn), 1, SPROP_UNSIGNED ),
 	SendPropFloat( SENDINFO(m_flDensity), 0, SPROP_NOSCALE),
 END_SEND_TABLE()
+*/
 
 LINK_ENTITY_TO_CLASS( env_starfield, CEnvStarfield );
 

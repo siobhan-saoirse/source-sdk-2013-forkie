@@ -30,7 +30,7 @@ private:
 
 	DECLARE_CLASS( CBaseHLCombatWeapon, CBaseCombatWeapon );
 public:
-	DECLARE_NETWORKCLASS();
+	//DECLARE_NETWORKCLASS();
 	DECLARE_PREDICTABLE();
 
 	virtual bool	WeaponShouldBeLowered( void );

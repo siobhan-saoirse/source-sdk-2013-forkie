@@ -100,7 +100,7 @@ BEGIN_DATADESC( CPropCrane )
 	DEFINE_KEYFIELD( m_vehicleScript, FIELD_STRING, "vehiclescript" ),
 
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST(CPropCrane, DT_PropCrane)
 	SendPropEHandle(SENDINFO(m_hPlayer)),
 	SendPropBool(SENDINFO(m_bMagnetOn)),
@@ -108,7 +108,7 @@ IMPLEMENT_SERVERCLASS_ST(CPropCrane, DT_PropCrane)
 	SendPropBool(SENDINFO(m_bExitAnimOn)),
 	SendPropVector(SENDINFO(m_vecEyeExitEndpoint), -1, SPROP_COORD),
 END_SEND_TABLE();
-
+*/
 
 //------------------------------------------------
 // Precache

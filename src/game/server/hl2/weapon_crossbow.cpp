@@ -76,7 +76,7 @@ protected:
 	//CHandle<CSpriteTrail>	m_pGlowTrail;
 
 	DECLARE_DATADESC();
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 };
 LINK_ENTITY_TO_CLASS( crossbow_bolt, CCrossbowBolt );
 
@@ -91,8 +91,8 @@ BEGIN_DATADESC( CCrossbowBolt )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST( CCrossbowBolt, DT_CrossbowBolt )
-END_SEND_TABLE()
+//IMPLEMENT_SERVERCLASS_ST( CCrossbowBolt, DT_CrossbowBolt )
+//END_SEND_TABLE()
 
 CCrossbowBolt *CCrossbowBolt::BoltCreate( const Vector &vecOrigin, const QAngle &angAngles, CBasePlayer *pentOwner )
 {
@@ -443,7 +443,7 @@ public:
 	bool	ShouldDisplayHUDHint() { return true; }
 
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 private:
@@ -482,8 +482,8 @@ LINK_ENTITY_TO_CLASS( weapon_crossbow, CWeaponCrossbow );
 
 PRECACHE_WEAPON_REGISTER( weapon_crossbow );
 
-IMPLEMENT_SERVERCLASS_ST( CWeaponCrossbow, DT_WeaponCrossbow )
-END_SEND_TABLE()
+//IMPLEMENT_SERVERCLASS_ST( CWeaponCrossbow, DT_WeaponCrossbow )
+//END_SEND_TABLE()
 
 BEGIN_DATADESC( CWeaponCrossbow )
 

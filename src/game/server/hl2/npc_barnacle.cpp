@@ -190,14 +190,14 @@ BEGIN_DATADESC( CNPC_Barnacle )
 	DEFINE_FIELD( m_bSwallowingBomb, FIELD_BOOLEAN ),
 
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST( CNPC_Barnacle, DT_Barnacle )
 	SendPropFloat(  SENDINFO( m_flAltitude ), 0, SPROP_NOSCALE),
 	SendPropVector( SENDINFO( m_vecRoot ), 0, SPROP_COORD ),
 	SendPropVector( SENDINFO( m_vecTip ), 0, SPROP_COORD ), 
 	SendPropVector( SENDINFO( m_vecTipDrawOffset ), 0, SPROP_NOSCALE ), 
 END_SEND_TABLE()
-
+*/
 
 //=========================================================
 // Classify - indicates this monster's place in the 

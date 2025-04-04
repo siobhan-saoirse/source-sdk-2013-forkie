@@ -229,13 +229,14 @@ BEGIN_DATADESC( CPropCombineBall )
 	DEFINE_INPUTFUNC( FIELD_VOID, "Socketed", InputSocketed ),
 
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST( CPropCombineBall, DT_PropCombineBall )
 	SendPropBool( SENDINFO( m_bEmit ) ),
 	SendPropFloat( SENDINFO( m_flRadius ), 0, SPROP_NOSCALE ),
 	SendPropBool( SENDINFO( m_bHeld ) ),
 	SendPropBool( SENDINFO( m_bLaunched ) ),
 END_SEND_TABLE()
+*/
 
 //-----------------------------------------------------------------------------
 // Gets at the spawner
@@ -582,13 +583,6 @@ void CPropCombineBall::InputSocketed( inputdata_t &inputdata )
 	{
 		pOwner->DeathNotice( this );
 		SetOwnerEntity( NULL );
-	}
-
-	// if our owner is a player, tell them we were socketed
-	CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( pOwner );
-	if ( pPlayer )
-	{
-		pPlayer->CombineBallSocketed( this );
 	}
 
 	UTIL_Remove( this );
@@ -1112,17 +1106,6 @@ void CPropCombineBall::DoExplosion( )
 	AddSolidFlags( FSOLID_NOT_SOLID );
 
 	m_bEmit = false;
-
-	
-	if( !m_bStruckEntity && hl2_episodic.GetBool() && GetOwnerEntity() != NULL )
-	{
-		// Notify the player proxy that this combine ball missed so that it can fire an output.
-		CHL2_Player *pPlayer = dynamic_cast<CHL2_Player *>( GetOwnerEntity() );
-		if ( pPlayer )
-		{
-			pPlayer->MissedAR2AltFire();
-		}
-	}
 
 	SetContextThink( &CPropCombineBall::SUB_Remove, gpGlobals->curtime + 0.5f, s_pRemoveContext );
 	StopLoopingSounds();

@@ -122,11 +122,11 @@ BEGIN_DATADESC( CBaseHelicopter )
 	DEFINE_INPUTFUNC( FIELD_VOID, "Kill", InputKill ),
 
 END_DATADESC()
-
+/*
 IMPLEMENT_SERVERCLASS_ST( CBaseHelicopter, DT_BaseHelicopter )
 	SendPropTime( SENDINFO( m_flStartupTime ) ),
 END_SEND_TABLE()
-
+*/
 
 //-----------------------------------------------------------------------------
 // Purpose: 

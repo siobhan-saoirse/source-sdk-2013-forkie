@@ -31,7 +31,7 @@ enum
 class CCitadelEnergyCore : public CBaseEntity
 {
 	DECLARE_CLASS( CCitadelEnergyCore, CBaseEntity );
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 public:

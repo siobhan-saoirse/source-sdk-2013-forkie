@@ -46,8 +46,8 @@ BEGIN_DATADESC( CWeaponAR2 )
 
 END_DATADESC()
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponAR2, DT_WeaponAR2)
-END_SEND_TABLE()
+//IMPLEMENT_SERVERCLASS_ST(CWeaponAR2, DT_WeaponAR2)
+//END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_ar2, CWeaponAR2 );
 PRECACHE_WEAPON_REGISTER(weapon_ar2);
@@ -337,7 +337,7 @@ void CWeaponAR2::FireNPCPrimaryAttack( CBaseCombatCharacter *pOperator, bool bUs
 	else 
 	{
 		vecShootOrigin = pOperator->Weapon_ShootPosition();
-		vecShootDir = npc->GetActualShootTrajectory( vecShootOrigin );
+		vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
 	}
 
 	WeaponSoundRealtime( SINGLE_NPC );

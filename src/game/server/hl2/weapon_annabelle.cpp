@@ -26,7 +26,7 @@ class CWeaponAnnabelle : public CBaseHLCombatWeapon
 public:
 	DECLARE_CLASS( CWeaponAnnabelle, CBaseHLCombatWeapon );
 
-	DECLARE_SERVERCLASS();
+	//DECLARE_SERVERCLASS();
 
 private:
 	bool	m_bNeedPump;		// When emptied completely
@@ -66,8 +66,8 @@ public:
 	CWeaponAnnabelle(void);
 };
 
-IMPLEMENT_SERVERCLASS_ST(CWeaponAnnabelle, DT_WeaponAnnabelle)
-END_SEND_TABLE()
+//IMPLEMENT_SERVERCLASS_ST(CWeaponAnnabelle, DT_WeaponAnnabelle)
+//END_SEND_TABLE()
 
 LINK_ENTITY_TO_CLASS( weapon_annabelle, CWeaponAnnabelle );
 #ifndef HL2MP
@@ -124,7 +124,7 @@ void CWeaponAnnabelle::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseComba
 			pOperator->DoMuzzleFlash();
 			m_iClip1 = m_iClip1 - 1;
 
-			vecShootDir = npc->GetActualShootTrajectory( vecShootOrigin );
+			vecShootDir = npc->GetShootEnemyDir( vecShootOrigin );
 			pOperator->FireBullets( 1, vecShootOrigin, vecShootDir, VECTOR_CONE_PRECALCULATED, MAX_TRACE_LENGTH, m_iPrimaryAmmoType, 0 );
 		}
 		break;

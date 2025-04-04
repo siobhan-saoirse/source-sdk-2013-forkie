@@ -83,6 +83,7 @@ protected:
 IMPLEMENT_SERVERCLASS_ST(CWeaponSniperRifle, DT_WeaponSniperRifle)
 END_SEND_TABLE()
 
+
 LINK_ENTITY_TO_CLASS( weapon_sniperrifle, CWeaponSniperRifle );
 PRECACHE_WEAPON_REGISTER(weapon_sniperrifle);
 
