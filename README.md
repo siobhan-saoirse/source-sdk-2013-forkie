@@ -1,4 +1,9 @@
-# Source SDK 2013
+# Siobhan's Source SDK 2013
+
+Made for my custom Mann Vs. Machine servers. Intended to add bug fixes, QOL enhancements, inclusion of Half-Life 2 and Half-Life: Source NPC code, and more. Made as an alternative for the sourcemod extension 'NPCs in TF2'.
+Don't you even think about whining about the inclusion of HL2 NPCs, you buckaroo. >:(
+
+## Original Markdown:
 
 Source code for Source SDK 2013.
 
