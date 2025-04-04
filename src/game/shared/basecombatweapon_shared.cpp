@@ -853,10 +853,9 @@ void CBaseCombatWeapon::DefaultTouch( CBaseEntity *pOther )
 
 	if( HasSpawnFlags(SF_WEAPON_NO_PLAYER_PICKUP) )
 		return;
-
 	if (pPlayer->BumpWeapon(this))
 	{
-		OnPickedUp( pPlayer );
+		OnPickedUp(pPlayer);
 	}
 #endif
 }

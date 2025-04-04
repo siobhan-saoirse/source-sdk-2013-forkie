@@ -2,6 +2,10 @@
 {
 	"ctf_2fort"
 	{
-		"viewed"		"2"
+		"viewed"		"5"
+	}
+	"mvm_decoy"
+	{
+		"viewed"		"1"
 	}
 }
