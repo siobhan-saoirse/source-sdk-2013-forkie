@@ -6,7 +6,7 @@
 	}
 	"mvm_decoy"
 	{
-		"viewed"		"17"
+		"viewed"		"18"
 	}
 	"mvm_black_mesa_v3"
 	{
