@@ -534,7 +534,7 @@ bool CEconEntity::ValidateEntityAttachedToPlayer( bool &bShouldRetry )
 
 #if defined( TF_CLIENT_DLL )
 	// Always valid in item testing mode
-	if ( TFGameRules()->IsInItemTestingMode() )
+	//if ( TFGameRules()->IsInItemTestingMode() )
 		return true;
 
 	C_TFPlayer *pOwner = ToTFPlayer( GetOwnerEntity() );

@@ -564,7 +564,11 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 	bool bHitEnemyPlayer = false;
 
 	// Hit sound - immediate.
-	if( trace.m_pEnt->IsPlayer() || trace.m_pEnt->IsNPC())
+	if (trace.m_pEnt->IsNPC())
+	{
+		WeaponSound(MELEE_HIT);
+	} 
+	else if (trace.m_pEnt->IsPlayer())
 	{
 		CTFPlayer *pTargetPlayer = ToTFPlayer( trace.m_pEnt );
 
