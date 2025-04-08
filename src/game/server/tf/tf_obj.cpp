@@ -2521,7 +2521,21 @@ void CBaseObject::Killed( const CTakeDamageInfo &info )
 //-----------------------------------------------------------------------------
 Class_T	CBaseObject::Classify( void )
 {
-	return CLASS_NONE;
+	if (GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
+		return CLASS_PLAYER;
+	}
+	else {
+		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+
+			return CLASS_COMBINE;
+
+		}
+		else {
+
+			return CLASS_NONE;
+
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

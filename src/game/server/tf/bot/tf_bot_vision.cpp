@@ -11,6 +11,7 @@
 #include "tf_player.h"
 #include "tf_gamerules.h"
 #include "tf_obj_sentrygun.h"
+#include "ai_basenpc.h"
 
 ConVar tf_bot_choose_target_interval( "tf_bot_choose_target_interval", "0.3f", FCVAR_CHEAT, "How often, in seconds, a TFBot can reselect his target" );
 ConVar tf_bot_sniper_choose_target_interval( "tf_bot_sniper_choose_target_interval", "3.0f", FCVAR_CHEAT, "How often, in seconds, a zoomed-in Sniper can reselect his target" );
@@ -128,6 +129,22 @@ void CTFBotVision::UpdatePotentiallyVisibleNPCVector( void )
 			}
 		}
 
+		CAI_BaseNPC** ppAIs = g_AI_Manager.AccessAIs();
+		int nNPCCount = g_AI_Manager.NumAIs();
+		for (int iNPC = 0; iNPC < nNPCCount; ++iNPC)
+		{
+			CAI_BaseNPC* pTargetNPC = ppAIs[iNPC];
+			if (!pTargetNPC)
+				continue;
+
+			if (!pTargetNPC->IsAlive())
+				continue;
+
+			if (pTargetNPC->IRelationType(GetBot()->GetEntity()) != D_HT)
+				continue;
+
+			m_potentiallyVisibleNPCVector.AddToTail(pTargetNPC);
+		}
 		CUtlVector< INextBot * > botVector;
 		TheNextBots().CollectAllBots( &botVector );
 		for( int i=0; i<botVector.Count(); ++i )

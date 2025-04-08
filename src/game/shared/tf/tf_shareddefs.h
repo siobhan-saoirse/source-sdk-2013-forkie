@@ -1087,7 +1087,6 @@ extern const char *g_pszHintMessages[];
 #define CLASS_TFGOAL_TIMER			((Class_T)(NUM_AI_CLASSES+1))
 #define CLASS_TFGOAL_ITEM			((Class_T)(NUM_AI_CLASSES+2))
 #define CLASS_TFSPAWN				((Class_T)(NUM_AI_CLASSES+3))
-#define CLASS_MACHINE				((Class_T)(NUM_AI_CLASSES+4))
 
 // TeamFortress State Flags
 #define TFSTATE_GRENPRIMED		0x000001 // Whether the player has a primed grenade

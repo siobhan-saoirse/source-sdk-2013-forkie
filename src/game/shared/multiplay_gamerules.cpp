@@ -723,7 +723,7 @@ ConVarRef suitcharger( "sk_suitcharger" );
 	{
 		if ( pKiller)
 		{
-			if ( pKiller->Classify() == CLASS_PLAYER )
+			if ( pKiller->Classify() == CLASS_PLAYER || pKiller->Classify() == CLASS_COMBINE )
 				return (CBasePlayer*)pKiller;
 
 			// Killing entity might be specifying a scorer player

@@ -2916,7 +2916,12 @@ void CBasePlayer::Duck( )
 //
 Class_T  CBasePlayer::Classify ( void )
 {
-	return CLASS_PLAYER;
+	if (GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+		return CLASS_COMBINE;
+	}
+	else {
+		return CLASS_PLAYER;
+	}
 }
 
 

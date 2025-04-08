@@ -258,7 +258,7 @@ CHudMainMenuOverride::~CHudMainMenuOverride( void )
 
 	if ( GetClientModeTFNormal()->GameUI() )
 	{
-		GetClientModeTFNormal()->GameUI()->SetMainMenuOverride( NULL );
+		//GetClientModeTFNormal()->GameUI()->SetMainMenuOverride( NULL );
 	}
 
 	if ( m_pButtonKV )
@@ -327,7 +327,7 @@ void CHudMainMenuOverride::AttachToGameUI( void )
 
 	if ( GetClientModeTFNormal()->GameUI() )
 	{
-		GetClientModeTFNormal()->GameUI()->SetMainMenuOverride( GetVPanel() );
+		//GetClientModeTFNormal()->GameUI()->SetMainMenuOverride( GetVPanel() );
 	}
 
 	SetKeyBoardInputEnabled( true );
