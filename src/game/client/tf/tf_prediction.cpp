@@ -9,6 +9,7 @@
 #include "c_baseplayer.h"
 #include "igamemovement.h"
 #include "c_tf_player.h"
+#include "iclientvehicle.h"
 
 
 static CMoveData g_MoveData;
@@ -46,6 +47,13 @@ void CTFPrediction::SetupMove( C_BasePlayer *player, CUserCmd *ucmd, IMoveHelper
 
 	// Call the default SetupMove code.
 	BaseClass::SetupMove( player, ucmd, pHelper, move );
+
+	IClientVehicle* pVehicle = player->GetVehicle();
+	if (pVehicle)
+	{
+		pVehicle->SetupMove(player, ucmd, pHelper, move);
+	}
+
 }
 
 //-----------------------------------------------------------------------------

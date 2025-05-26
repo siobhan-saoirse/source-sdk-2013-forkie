@@ -13992,6 +13992,9 @@ CTFPlayer *CTFGameRules::GetRecentDamager( CTFPlayer *pVictim, int iDamager, flo
 //-----------------------------------------------------------------------------
 CBasePlayer *CTFGameRules::GetDeathScorer( CBaseEntity *pKiller, CBaseEntity *pInflictor, CBaseEntity *pVictim )
 {
+	if (!pKiller->IsPlayer() || pKiller == NULL)
+		return NULL;
+
 	if ( ( pKiller == pVictim ) && ( pKiller == pInflictor ) )
 	{
 		// If this was an explicit suicide, see if there was a damager within a certain time window.  If so, award this as a kill to the damager.

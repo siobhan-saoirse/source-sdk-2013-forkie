@@ -1125,7 +1125,6 @@ int CAI_PlayerAlly::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
 	CTakeDamageInfo subInfo = info;
 	// Vital allies never take more than 25% of their health in a single hit (except for physics damage)
-#ifdef HL2_DLL
 	// Don't do damage reduction for DMG_GENERIC. This allows SetHealth inputs to still do full damage.
 	if ( subInfo.GetDamageType() != DMG_GENERIC )
 	{
@@ -1139,7 +1138,9 @@ int CAI_PlayerAlly::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 		}
 	}
-#endif
+	if (subInfo.GetAttacker()->IsPlayer() && subInfo.GetAttacker()->Classify() == CLASS_COMBINE) {
+		subInfo.SetDamage(0);
+	}
 
 	return BaseClass::OnTakeDamage_Alive( subInfo );
 }

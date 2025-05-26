@@ -82,7 +82,7 @@ void CTFViewModel::AddViewModelBob( CBasePlayer *owner, Vector& eyePosition, QAn
 #endif
 }
 
-ConVar sv_wpn_sway_pred_legacy("sv_wpn_sway_pred_legacy", "1", FCVAR_REPLICATED);
+ConVar sv_wpn_sway_pred_legacy("sv_wpn_sway_pred_legacy", "0", FCVAR_REPLICATED);
 
 void CTFViewModel::CalcViewModelLag( Vector& origin, QAngle& angles, QAngle& original_angles )
 {

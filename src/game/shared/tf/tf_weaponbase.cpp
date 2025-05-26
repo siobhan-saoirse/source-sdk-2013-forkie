@@ -4705,7 +4705,7 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	angles[PITCH] -= pBobState->m_flVerticalBob * 0.4f;
 	angles[YAW] -= pBobState->m_flLateralBob * 0.3f;
 
-//	VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
+	VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
 }
 
 //-----------------------------------------------------------------------------

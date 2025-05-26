@@ -32,7 +32,7 @@
 
 
 // Half-Life User Info Configuration Layout Script (stores last settings chosen, too)
-// File generated:  Fri Apr  4 19:54:18 AM
+// File generated:  Wed Apr  9 14:53:19 AM
 //
 //
 // Cvar	-	Setting
@@ -206,7 +206,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_CombatTextBatching"
 		"#Tooltip_CombatTextBatching"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"hud_combattext_doesnt_block_overhead_text"
@@ -230,7 +230,7 @@ DESCRIPTION INFO_OPTIONS
 		"#Tooltip_CombatTextGreen"
 		"#Tooltip_CombatTextColors"
 		{ SLIDER 1 255 }
-		{ "1" }
+		{ "255" }
 	}
 
 	"hud_combattext_blue"
@@ -338,7 +338,7 @@ DESCRIPTION INFO_OPTIONS
 		"#GameUI_EnableHUDMinMode"
 		"#Tooltip_EnableHUDMinMode"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"tf_colorblindassist"
@@ -385,7 +385,7 @@ DESCRIPTION INFO_OPTIONS
 		"#GameUI_HudPlayerClassUsePlayerModel"
 		"#ToolTip_HudPlayerClassUsePlayerModel"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"viewmodel_fov"
@@ -393,7 +393,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_viewmodelfov_option"
 		"#Tooltip_viewmodelfov_option"
 		{ SLIDER 54 70 }
-		{ "65" }
+		{ "54" }
 	}
 
 	"tf_spectator_target_location"
@@ -464,7 +464,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_RomeVisionOptIn"
 		"#Tooltip_RomeVisionOptIn"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"tf_hud_target_id_disable_floating_health"
@@ -520,7 +520,7 @@ DESCRIPTION INFO_OPTIONS
 	{
 		"#TF_ScoreBoard_PingAsText"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"tf_scoreboard_alt_class_icons"
@@ -672,7 +672,7 @@ DESCRIPTION INFO_OPTIONS
 		"#TF_use_min_viewmodels_option"
 		"#Tooltip_use_min_viewmodels_option"
 		{ BOOL }
-		{ "1" }
+		{ "0" }
 	}
 
 	"cl_spraydisable"

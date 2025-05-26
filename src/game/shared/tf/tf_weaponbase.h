@@ -445,6 +445,7 @@ class CTFWeaponBase : public CBaseCombatWeapon, public IHasOwner, public IHasGen
 
 	// Shadows
 	virtual ShadowType_t ShadowCastType( void ) OVERRIDE;
+	float			m_flGunAccuracyPosition;
 #endif
 
 	virtual bool	CanAttack();

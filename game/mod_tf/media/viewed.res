@@ -6,7 +6,7 @@
 	}
 	"mvm_decoy"
 	{
-		"viewed"		"21"
+		"viewed"		"25"
 	}
 	"mvm_black_mesa_v3"
 	{
@@ -18,11 +18,11 @@
 	}
 	"td_trade_plaza_v5_hotfix"
 	{
-		"viewed"		"1"
+		"viewed"		"3"
 	}
 	"mvm_mannhattan"
 	{
-		"viewed"		"1"
+		"viewed"		"2"
 	}
 	"mvm_rottenburg"
 	{
@@ -42,7 +42,7 @@
 	}
 	"mvm_coaltown"
 	{
-		"viewed"		"1"
+		"viewed"		"2"
 	}
 	"mvm_hakurei_shrine_v2"
 	{
@@ -51,5 +51,13 @@
 	"mvm_hakurei_shrine_v3"
 	{
 		"viewed"		"6"
+	}
+	"mvm_black_mesa"
+	{
+		"viewed"		"14"
+	}
+	"mvm_whiteforest"
+	{
+		"viewed"		"37"
 	}
 }

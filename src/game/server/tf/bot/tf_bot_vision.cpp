@@ -143,6 +143,9 @@ void CTFBotVision::UpdatePotentiallyVisibleNPCVector( void )
 			if (pTargetNPC->IRelationType(GetBot()->GetEntity()) != D_HT)
 				continue;
 
+			if (GetBot()->GetEntity()->GetTeamNumber() == TF_TEAM_PVE_INVADERS)
+				continue;
+
 			m_potentiallyVisibleNPCVector.AddToTail(pTargetNPC);
 		}
 		CUtlVector< INextBot * > botVector;

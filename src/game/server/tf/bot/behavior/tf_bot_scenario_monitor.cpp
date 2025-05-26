@@ -220,7 +220,7 @@ Action< CTFBot > *CTFBotScenarioMonitor::DesiredScenarioAndClassAction( CTFBot *
 			}
 
 			// capture the flag
-			return new CTFBotFetchFlag;
+			//return new CTFBotFetchFlag;
 		}
 		else {
 

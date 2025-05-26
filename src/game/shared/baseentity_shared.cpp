@@ -1604,10 +1604,6 @@ void CBaseEntity::FireBullets( const FireBulletsInfo_t &info )
 	
 	bool bDoServerEffects = true;
 
-#if defined( HL2MP ) && defined( GAME_DLL )
-	bDoServerEffects = false;
-#endif
-
 #if defined( GAME_DLL )
 	if( IsPlayer() )
 	{
@@ -2243,10 +2239,11 @@ int CBaseEntity::GetTracerAttachment( void )
 {
 	int iAttachment = TRACER_DONT_USE_ATTACHMENT;
 
-	if ( g_pGameRules->IsMultiplayer() )
+	if (g_pGameRules->IsMultiplayer() && (IsPlayer() || IsBaseObject()))
 	{
 		iAttachment = 1;
 	}
+
 
 	return iAttachment;
 }
