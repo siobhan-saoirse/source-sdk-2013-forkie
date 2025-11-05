@@ -4604,6 +4604,12 @@ void CTFWeaponBase::OnControlStunned( void )
 
 #if defined( CLIENT_DLL )
 
+extern float	g_lateralBob;
+extern float	g_verticalBob;
+#define	HL2_BOB_CYCLE_MIN	1.0f
+#define	HL2_BOB_CYCLE_MAX	0.45f
+#define	HL2_BOB			0.002f
+#define	HL2_BOB_UP		0.5f
 static ConVar	cl_bobcycle( "cl_bobcycle","0.8", FCVAR_CHEAT );
 static ConVar	cl_bobup( "cl_bobup","0.5", FCVAR_CHEAT );
 
@@ -4612,27 +4618,15 @@ static ConVar	cl_bobup( "cl_bobup","0.5", FCVAR_CHEAT );
 //-----------------------------------------------------------------------------
 float CalcViewModelBobHelper( CBasePlayer *player, BobState_t *pBobState )
 {
-	Assert( pBobState );
-	if ( !pBobState )
-		return 0;
-
+	static	float bobtime;
+	static	float lastbobtime;
 	float	cycle;
 
-	// Don't allow zeros, because we divide by them.
-	float flBobup = cl_bobup.GetFloat();
-	if ( flBobup <= 0 )
-	{
-		flBobup = 0.01;
-	}
-	float flBobCycle = cl_bobcycle.GetFloat();
-	if ( flBobCycle <= 0 )
-	{
-		flBobCycle = 0.01;
-	}
+	//Assert( player );
 
 	//NOTENOTE: For now, let this cycle continue when in the air, because it snaps badly without it
 
-	if ( ( !gpGlobals->frametime ) || ( player == NULL ) )
+	if ((!gpGlobals->frametime) || (player == NULL))
 	{
 		//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
 		return 0.0f;// just use old value
@@ -4640,56 +4634,51 @@ float CalcViewModelBobHelper( CBasePlayer *player, BobState_t *pBobState )
 
 	//Find the speed of the player
 	float speed = player->GetLocalVelocity().Length2D();
-	float flmaxSpeedDelta = MAX( 0, (gpGlobals->curtime - pBobState->m_flLastBobTime ) * 320.0f );
-
-	// don't allow too big speed changes
-	speed = clamp( speed, pBobState->m_flLastSpeed-flmaxSpeedDelta, pBobState->m_flLastSpeed+flmaxSpeedDelta );
-	speed = clamp( speed, -320.f, 320.f );
-
-	pBobState->m_flLastSpeed = speed;
 
 	//FIXME: This maximum speed value must come from the server.
 	//		 MaxSpeed() is not sufficient for dealing with sprinting - jdw
 
-	float bob_offset = RemapVal( speed, 0, 320, 0.0f, 1.0f );
+	speed = clamp(speed, -320, 320);
 
-	pBobState->m_flBobTime += ( gpGlobals->curtime - pBobState->m_flLastBobTime ) * bob_offset;
-	pBobState->m_flLastBobTime = gpGlobals->curtime;
+	float bob_offset = RemapVal(speed, 0, 320, 0.0f, 1.0f);
+
+	bobtime += (gpGlobals->curtime - lastbobtime) * bob_offset;
+	lastbobtime = gpGlobals->curtime;
 
 	//Calculate the vertical bob
-	cycle = pBobState->m_flBobTime - (int)(pBobState->m_flBobTime/flBobCycle)*flBobCycle;
-	cycle /= flBobCycle;
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX) * HL2_BOB_CYCLE_MAX;
+	cycle /= HL2_BOB_CYCLE_MAX;
 
-	if ( cycle < flBobup )
+	if (cycle < HL2_BOB_UP)
 	{
-		cycle = M_PI * cycle / flBobup;
+		cycle = M_PI * cycle / HL2_BOB_UP;
 	}
 	else
 	{
-		cycle = M_PI + M_PI*(cycle-flBobup)/(1.0 - flBobup);
+		cycle = M_PI + M_PI * (cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
 	}
 
-	pBobState->m_flVerticalBob = speed*0.005f;
-	pBobState->m_flVerticalBob = pBobState->m_flVerticalBob*0.3 + pBobState->m_flVerticalBob*0.7*sin(cycle);
+	g_verticalBob = speed * 0.005f;
+	g_verticalBob = g_verticalBob * 0.3 + g_verticalBob * 0.7 * sin(cycle);
 
-	pBobState->m_flVerticalBob = clamp( pBobState->m_flVerticalBob, -7.0f, 4.0f );
+	g_verticalBob = clamp(g_verticalBob, -7.0f, 4.0f);
 
 	//Calculate the lateral bob
-	cycle = pBobState->m_flBobTime - (int)(pBobState->m_flBobTime/flBobCycle*2)*flBobCycle*2;
-	cycle /= flBobCycle*2;
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX * 2) * HL2_BOB_CYCLE_MAX * 2;
+	cycle /= HL2_BOB_CYCLE_MAX * 2;
 
-	if ( cycle < flBobup )
+	if (cycle < HL2_BOB_UP)
 	{
-		cycle = M_PI * cycle / flBobup;
+		cycle = M_PI * cycle / HL2_BOB_UP;
 	}
 	else
 	{
-		cycle = M_PI + M_PI*(cycle-flBobup)/(1.0 - flBobup);
+		cycle = M_PI + M_PI * (cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
 	}
 
-	pBobState->m_flLateralBob = speed*0.005f;
-	pBobState->m_flLateralBob = pBobState->m_flLateralBob*0.3 + pBobState->m_flLateralBob*0.7*sin(cycle);
-	pBobState->m_flLateralBob = clamp( pBobState->m_flLateralBob, -7.0f, 4.0f );
+	g_lateralBob = speed * 0.005f;
+	g_lateralBob = g_lateralBob * 0.3 + g_lateralBob * 0.7 * sin(cycle);
+	g_lateralBob = clamp(g_lateralBob, -7.0f, 4.0f);
 
 	//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
 	return 0.0f;
@@ -4707,20 +4696,6 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	Vector	forward, right, up;
 	AngleVectors( angles, &forward, &right, &up );
 
-	// Apply bob, but scaled down to 40%
-	/*
-	VectorMA(origin, pBobState->m_flVerticalBob * 0.4f, forward, origin);
-
-	// Z bob a bit more
-	origin[2] += pBobState->m_flVerticalBob * 0.1f;
-
-	// bob the angles
-	angles[ROLL] += pBobState->m_flVerticalBob * 0.5f;
-	angles[PITCH] -= pBobState->m_flVerticalBob * 0.4f;
-	angles[YAW] -= pBobState->m_flLateralBob * 0.3f;
-
-	VectorMA(origin, pBobState->m_flLateralBob * 0.2f, right, origin);
-	*/
 	// Apply bob, but scaled down to 40%
 	VectorMA(origin, pBobState->m_flVerticalBob * 0.1f, forward, origin);
 
