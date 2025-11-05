@@ -10920,8 +10920,9 @@ bool CTFPlayer::ShouldGib( const CTakeDamageInfo &info )
 	}
 
 	// normal players/bots don't gib in MvM
-	if ( TFGameRules()->IsMannVsMachineMode() )
-		return false;
+	// WHY?
+	//if ( TFGameRules()->IsMannVsMachineMode() )
+		//return false;
 
 	// Suicide explode always gibs.
 	if ( m_bSuicideExplode )
