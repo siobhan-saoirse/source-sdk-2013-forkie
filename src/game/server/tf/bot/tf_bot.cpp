@@ -3294,8 +3294,9 @@ void CTFBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 			Weapon_Switch( Weapon_GetSlot( TF_WPN_TYPE_SECONDARY ) );
 			return;
 		}
-
-		secondary = NULL;
+		if (this->GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+			secondary = NULL;
+		}
 	}
 
 	CTFWeaponBase *melee = dynamic_cast< CTFWeaponBase *>( Weapon_GetSlot( TF_WPN_TYPE_MELEE ) );

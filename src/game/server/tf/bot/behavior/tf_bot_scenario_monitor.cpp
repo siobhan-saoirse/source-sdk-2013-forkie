@@ -176,10 +176,27 @@ Action< CTFBot > *CTFBotScenarioMonitor::DesiredScenarioAndClassAction( CTFBot *
 	}
 #endif // TF_RAID_MODE	
 
-	if ( TFGameRules()->IsMannVsMachineMode() )
+	if (TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_DEFENDERS)
 	{
-		if (me->GetTeamNumber() != TF_TEAM_RED) {
+		if (me->IsPlayerClass(TF_CLASS_SNIPER))
+		{
+			return new CTFBotSniperLurk;
+		}
 
+		if (me->IsPlayerClass(TF_CLASS_MEDIC))
+		{
+			return new CTFBotMedicHeal;
+		}
+
+		if (me->IsPlayerClass(TF_CLASS_ENGINEER))
+		{
+			return new CTFBotEngineerBuild;
+		}
+
+		return new CTFBotSeekAndDestroy;
+	}
+	if ( TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_INVADERS )
+	{
 			if (me->IsPlayerClass(TF_CLASS_SPY))
 			{
 				return new CTFBotSpyLeaveSpawnRoom;
@@ -221,32 +238,6 @@ Action< CTFBot > *CTFBotScenarioMonitor::DesiredScenarioAndClassAction( CTFBot *
 
 			// capture the flag
 			//return new CTFBotFetchFlag;
-		}
-		else {
-
-
-			if (me->IsPlayerClass(TF_CLASS_SNIPER))
-			{
-				return new CTFBotSniperLurk;
-			}
-
-			if (me->IsPlayerClass(TF_CLASS_SPY))
-			{
-				return new CTFBotSpyInfiltrate;
-			}
-
-			if (me->IsPlayerClass(TF_CLASS_MEDIC))
-			{
-				return new CTFBotMedicHeal;
-			}
-
-			if (me->IsPlayerClass(TF_CLASS_ENGINEER))
-			{
-				return new CTFBotEngineerBuild;
-			}
-
-			return new CTFBotSeekAndDestroy;
-		}
 	}
 
 	if ( me->IsPlayerClass( TF_CLASS_SPY ) )
