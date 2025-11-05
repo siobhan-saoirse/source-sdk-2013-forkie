@@ -1938,7 +1938,7 @@ const char *CServerGameDLL::GetServerBrowserGameData()
 	}
 	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
 	{
-		bool bMannup = pMatch && pMatch->m_eMatchGroup == k_eTFMatchGroup_MvM_MannUp;
+		bool bMannup = true;
 		sResult.Append( CFmtStr( ",mannup:%d", (int)bMannup ) );
 	}
 #endif

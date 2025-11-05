@@ -186,6 +186,10 @@ void CTFRocketLauncher::Precache()
 	PrecacheScriptSound( "MVM.GiantSoldierRocketShootCrit" );
 	PrecacheScriptSound( "MVM.GiantSoldierRocketExplode" );
 
+	PrecacheScriptSound("MVM.GiantDemoman_Grenadeshoot");
+	PrecacheScriptSound("MVM.GiantPyro_FlameStart");
+	PrecacheScriptSound("MVM.GiantPyro_FlameLoop");
+
 	PrecacheScriptSound( "Weapon_Airstrike.AltFire" );
 	PrecacheScriptSound( "Weapon_Airstrike.Fail" );
 	//Building_Sentrygun.FireRocket

@@ -2353,7 +2353,7 @@ bool CTFGameRules::BInMatchStartCountdown() const
 
 ETFMatchGroup CTFGameRules::GetCurrentMatchGroup() const
 {
-
+	/*
 #ifdef GAME_DLL
 	CMatchInfo *pMatch = GTFGCClientSystem()->GetMatch();
 	return pMatch ? pMatch->m_eMatchGroup : k_eTFMatchGroup_Invalid;
@@ -2364,6 +2364,8 @@ ETFMatchGroup CTFGameRules::GetCurrentMatchGroup() const
 	// the match is over, but we're still connected.
 	return GTFGCClientSystem()->BConnectedToMatchServer( false ) ? (ETFMatchGroup)m_nMatchGroupType.Get() : k_eTFMatchGroup_Invalid;
 #endif
+	*/
+	return TFGameRules()->IsMannVsMachineMode() ? k_eTFMatchGroup_MvM_MannUp : k_eTFMatchGroup_Invalid;
 }
 
 bool CTFGameRules::IsManagedMatchEnded() const
