@@ -140,6 +140,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+
 #pragma warning( disable: 4355 ) // disables ' 'this' : used in base member initializer list'
 
 ConVar sv_motd_unload_on_dismissal( "sv_motd_unload_on_dismissal", "0", 0, "If enabled, the MOTD contents will be unloaded when the player closes the MOTD." );
@@ -168,7 +169,7 @@ extern ConVar	tf_bot_quota_mode;
 extern ConVar	tf_bot_quota;
 extern ConVar	halloween_starting_souls;
 
-extern ConVar tf_powerup_mode_killcount_timer_length;
+extern ConVar tf_powerup_mode_killcount_timer_length;	
 
 float GetCurrentGravity( void );
 
@@ -3140,7 +3141,7 @@ void CTFPlayer::Precache()
 		  If you have any question, come talk to me (Bank)
 	*/
 	PrecacheTFPlayer();
-
+	PrecacheScriptSound("Weapon_BoxingGloves.CritEnabled");
 	BaseClass::Precache();
 }
 
@@ -11141,6 +11142,7 @@ void CTFPlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 			{
 				// Perceptually, people seem to think the effect is shorter than the stated time, so we cheat by adding a tad more for that
 				m_Shared.AddCond( TF_COND_CRITBOOSTED_ON_KILL, iCritBoost+1 );
+				EmitSound("Weapon_BoxingGloves.CritEnabled");
 			}
 
 			int iMiniCritBoost = 0;

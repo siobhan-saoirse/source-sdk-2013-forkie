@@ -12,6 +12,7 @@
 #if defined ( TF_DLL ) || defined ( TF_CLIENT_DLL )
 #include "tf_gamerules.h"
 #endif
+#include "tf_weaponbase.h"
 
 #if defined( CLIENT_DLL )
 
@@ -1617,6 +1618,7 @@ void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 
 	// Apply punch angle
 	VectorAdd( eyeAngles, m_Local.m_vecPunchAngle, eyeAngles );
+
 
 #if defined( CLIENT_DLL )
 	if ( !prediction->InPrediction() )

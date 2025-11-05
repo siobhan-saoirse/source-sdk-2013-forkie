@@ -130,6 +130,8 @@
 // NVNT haptics system interface
 #include "c_tf_haptics.h"
 
+#include "achievementmgr.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -143,6 +145,8 @@ static_assert( TF_TEAM_BLUE == 3, "If this assert fires, update the assert and t
 // Forward decl
 CEconItemView *GetEconItemViewFromProxyEntity( void *pEntity );
 C_TFPlayer *GetOwnerFromProxyEntity( void *pEntity );
+
+extern CAchievementMgr g_AchievementMgrTF;
 
 // --------------------------------------------------------------------------------
 // Local Convar Helper Function
@@ -4030,6 +4034,7 @@ void C_TFPlayer::Spawn( void )
 	SetShowHudMenuTauntSelection( false );
 
 	CleanUpAnimationOnSpawn();
+	g_AchievementMgrTF.AwardAchievement(ACHIEVEMENT_SIOBHAN_WELCOME);
 }
 
 //-----------------------------------------------------------------------------

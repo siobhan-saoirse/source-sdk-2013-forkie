@@ -775,7 +775,22 @@ public:
 	// server awards this achievement, no other code within achievement necessary
 };
 DECLARE_ACHIEVEMENT( CAchievementTF_MvM_UseAmmoBottle, ACHIEVEMENT_TF_MVM_USE_AMMO_BOTTLE, "TF_MVM_USE_AMMO_BOTTLE", 5 );
- 
+
+//----------------------------------------------------------------------------------------------------------------
+class CAchievementTF_MvM_Welcome : public CBaseTFAchievementSimple
+{
+public:
+	void Init()
+	{
+		SetFlags(ACH_SAVE_GLOBAL);
+		SetGoal(1);
+	}
+
+	// server awards this achievement, no other code within achievement necessary
+};
+DECLARE_ACHIEVEMENT(CAchievementTF_MvM_Welcome, ACHIEVEMENT_SIOBHAN_WELCOME, "SIOBHAN_WELCOME", 5);
+
+
 //----------------------------------------------------------------------------------------------------------------
 class CAchievementTF_MvM_MaxPrimaryUpgrades : public CBaseTFAchievementSimple
 {

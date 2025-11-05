@@ -4607,7 +4607,7 @@ void CTFWeaponBase::OnControlStunned( void )
 extern float	g_lateralBob;
 extern float	g_verticalBob;
 #define	HL2_BOB_CYCLE_MIN	1.0f
-#define	HL2_BOB_CYCLE_MAX	0.45f
+#define	HL2_BOB_CYCLE_MAX	0.8f
 #define	HL2_BOB			0.002f
 #define	HL2_BOB_UP		0.5f
 static ConVar	cl_bobcycle( "cl_bobcycle","0.8", FCVAR_CHEAT );
@@ -4637,8 +4637,6 @@ float CalcViewModelBobHelper( CBasePlayer *player, BobState_t *pBobState )
 
 	//FIXME: This maximum speed value must come from the server.
 	//		 MaxSpeed() is not sufficient for dealing with sprinting - jdw
-
-	speed = clamp(speed, -320, 320);
 
 	float bob_offset = RemapVal(speed, 0, 320, 0.0f, 1.0f);
 
@@ -4693,11 +4691,11 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	if ( !pBobState )
 		return;
 
-	Vector	forward, right, up;
-	AngleVectors( angles, &forward, &right, &up );
+	Vector	forward, right;
+	AngleVectors(angles, &forward, &right, NULL);
 
 	// Apply bob, but scaled down to 40%
-	VectorMA(origin, g_verticalBob * 0.1f, forward, origin);
+	VectorMA(origin, g_verticalBob * 0.4f, forward, origin);
 
 	// Z bob a bit more
 	origin[2] += g_verticalBob * 0.1f;
@@ -4705,10 +4703,9 @@ void AddViewModelBobHelper( Vector &origin, QAngle &angles, BobState_t *pBobStat
 	// bob the angles
 	angles[ROLL] += g_verticalBob * 0.5f;
 	angles[PITCH] -= g_verticalBob * 0.4f;
-
 	angles[YAW] -= g_lateralBob * 0.3f;
 
-	VectorMA(origin, g_lateralBob * 0.8f, right, origin);
+	VectorMA(origin, g_lateralBob * 0.2f, right, origin);
 }
 
 //-----------------------------------------------------------------------------

@@ -1666,7 +1666,9 @@ bool CSquadSpawner::Spawn( const Vector &here, EntityHandleVector_t *result )
 			CTFBot *bot = ToTFBot( squadVector[i] );
 			if ( bot )
 			{
-				bot->JoinSquad( squad );
+				if (bot->GetFlagToFetch()) {
+					bot->JoinSquad(squad);
+				}
 			}
 		}
 	}

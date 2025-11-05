@@ -610,7 +610,12 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 		} 
 		if(! bPlayMvMHitOnly )
 		{
-			WeaponSound( MELEE_HIT );
+			if (!IsCurrentAttackACrit()) {
+				WeaponSound(MELEE_HIT);	
+			}
+			else {
+				WeaponSound(MELEE_BURST);
+			}
 		}
 
 #if !defined (CLIENT_DLL)
