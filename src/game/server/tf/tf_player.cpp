@@ -18018,7 +18018,7 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 	}
 	else if ( IsPlayerClass(TF_CLASS_HEAVYWEAPONS) )
 	{
-		if ( !V_stricmp( szResponse, "scenes/player/heavy/low/taunt03_v1.vcd" ) )
+		if ( !V_stricmp( szResponse, "scenes/player/heavy/low/taunt03_v1.vcd" ) || !V_stricmp(szResponse, "scenes/player/heavy/low/taunt03_v2.vcd") || !V_stricmp(szResponse, "scenes/player/heavy/low/taunt03.vcd"))
 		{
 			m_flTauntAttackTime = gpGlobals->curtime + 1.8;
 			m_iTauntAttack = TAUNTATK_HEAVY_HIGH_NOON;
