@@ -1408,7 +1408,6 @@ void BotGenerateAndWearItem( CTFPlayer *pBot, const char *itemName )
 		// Fake global id
 		static int s_nFakeID = 1;
 		static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem()->SetItemID( s_nFakeID++ );
-
 		DispatchSpawn( pItem );
 		static_cast<CEconEntity*>(pItem)->GiveTo( pBot );
 

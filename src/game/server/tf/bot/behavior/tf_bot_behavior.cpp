@@ -89,8 +89,6 @@ ActionResult< CTFBot >	CTFBotMainAction::OnStart( CTFBot *me, Action< CTFBot > *
 	}
 #endif // TF_CREEP_MODE
 
-
-
 	return Continue();
 }
 

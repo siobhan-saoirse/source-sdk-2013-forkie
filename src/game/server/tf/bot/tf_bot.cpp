@@ -1356,6 +1356,7 @@ void CTFBot::Spawn()
 	SetBrokenFormation( false );
 
 	GetVisionInterface()->ForgetAllKnownEntities();
+
 }
 
 
