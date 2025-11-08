@@ -379,8 +379,6 @@ void CTFMatchmakingDashboard::OnCommand( const char *command )
 	}
 	else if ( FStrEq( command, "find_game" ) )
 	{
-		OnPlayCommunity();
-		return;
 		PopStack( 100, k_eSideRight ); // All y'all
 		PushSlidePanel( GetDashboardPanel().GetTypedPanel< CMatchMakingDashboardSidePanel >( k_ePlayList ) );
 		CHudMainMenuOverride *pMMOverride = (CHudMainMenuOverride*)( gViewPortInterface->FindPanelByName( PANEL_MAINMENUOVERRIDE ) );
@@ -851,6 +849,8 @@ void CTFMatchmakingDashboard::OnPlayCasual()
 
 void CTFMatchmakingDashboard::OnPlayMvM()
 {
+	OnPlayCommunity();
+	return;
 	// Open the choice panel
 	PushSlidePanel( GetDashboardPanel().GetTypedPanel< CMatchMakingDashboardSidePanel >( k_eMvM_Mode_Select ) );
 }
@@ -891,26 +891,7 @@ void CTFMatchmakingDashboard::OnPlayTraining()
 {
 	ClearAllStacks();
 
-	if ( engine->IsInGame() )
-	{
-		const char *pText = "#TF_Training_Prompt";
-		const char *pTitle = "#TF_Training_Prompt_Title";
-		if ( TFGameRules() && TFGameRules()->IsInTraining() )
-		{
-			pTitle = "#TF_Training_Restart_Title";
-			pText = "#TF_Training_Restart_Text";
-		}
-
-		CTFConfirmTrainingDialog *pConfirm = vgui::SETUP_PANEL( new CTFConfirmTrainingDialog( pText, pTitle, this ) );
-		if ( pConfirm )
-		{
-			pConfirm->Show();
-		}
-	}
-	else
-	{
-		GetClientModeTFNormal()->GameUI()->SendMainMenuCommand( "engine training_showdlg" );
-	}
+	engine->ClientCmd_Unrestricted("gamemenucommand opennewgamedialog");
 }
 
 

@@ -646,11 +646,6 @@ bool CTFPartyClient::BCanQueueForMatch( ETFMatchGroup eGroup, CUtlVector< QueueE
 
 	// Global state preventing?
 	{
-		if ( !GTFGCClientSystem()->BHealthyGCConnection() )
-		{
-			lambdaCopyReason( "#TF_MM_NoGC", k_eDisabledType_Network );
-		}
-
 		// Is this match group disabled?
 		if ( GTFGCClientSystem()->BIsMatchGroupDisabled( eGroup ) )
 		{

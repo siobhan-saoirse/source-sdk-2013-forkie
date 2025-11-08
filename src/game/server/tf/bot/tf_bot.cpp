@@ -4593,7 +4593,7 @@ Action< CTFBot > *CTFBot::OpportunisticallyUseWeaponAbilities( void )
 			if ( lunchbox->HasAmmo() )
 			{
 				// scout lunchboxes are also gated by their energy drink meter
-				if ( !IsPlayerClass( TF_CLASS_SCOUT ) || m_Shared.GetScoutEnergyDrinkMeter() >= 100 )
+				if ( !IsPlayerClass( TF_CLASS_SCOUT ) && 2 * GetHealth() < GetMaxHealth() || m_Shared.GetScoutEnergyDrinkMeter() >= 100 )
 				{
 					return new CTFBotUseItem( lunchbox );
 				}
