@@ -855,7 +855,7 @@ void cc_tf_forced_holiday_changed( IConVar *pConVar, const char *pOldString, flo
 }
 #endif // GAME_DLL
 
-ConVar tf_forced_holiday( "tf_forced_holiday", "0", FCVAR_REPLICATED, "Forced holiday, \n   Birthday = 1\n   Halloween = 2\n" //  Christmas = 3\n   Valentines = 4\n   MeetThePyro = 5\n   FullMoon=6
+ConVar tf_forced_holiday( "tf_forced_holiday", "2", FCVAR_REPLICATED, "Forced holiday, \n   Birthday = 1\n   Halloween = 2\n" //  Christmas = 3\n   Valentines = 4\n   MeetThePyro = 5\n   FullMoon=6
 #ifdef GAME_DLL
 , cc_tf_forced_holiday_changed
 #endif // GAME_DLL
@@ -19692,7 +19692,7 @@ CAmmoDef* GetAmmoDef()
 		//
 		//=====================================================================
 #ifdef HL2_EPISODIC
-		def.AddAmmoType("StriderMinigun", DMG_BULLET, TRACER_LINE, 5, 5, 15, 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED); // hit like a 1.0kg weight at 750 ft/s
+		def.AddAmmoType("StriderMinigun", DMG_BULLET, TRACER_LINE, 5, 40, 15, 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED); // hit like a 1.0kg weight at 750 ft/s
 #else
 		def.AddAmmoType("StriderMinigun", DMG_BULLET, TRACER_LINE, 5, 15, 15, 1.0 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED); // hit like a 1.0kg weight at 750 ft/s
 #endif//HL2_EPISODIC

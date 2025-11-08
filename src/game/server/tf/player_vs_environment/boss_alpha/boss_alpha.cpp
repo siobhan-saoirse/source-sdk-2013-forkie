@@ -130,7 +130,7 @@ void CBossAlpha::Precache()
 #ifdef USE_BOSS_SENTRY
 	int model = PrecacheModel( "models/bots/boss_sentry/boss_sentry.mdl" );
 #else
-	int model = PrecacheModel( "models/bots/knight/knight.mdl" );
+	int model = PrecacheModel( "models/bots/demo_boss/bot_demo_boss.mdl" );
 #endif
 
 	PrecacheGibsForModel( model );
@@ -176,7 +176,8 @@ void CBossAlpha::Spawn( void )
 #ifdef USE_BOSS_SENTRY
 	SetModel( "models/bots/boss_sentry/boss_sentry.mdl" );
 #else
-	SetModel( "models/bots/knight/knight.mdl" );
+	SetModel( "models/bots/demo_boss/bot_demo_boss.mdl" );
+	SetModelScale(2.0f);
 #endif
 
 	m_conditionFlags = 0;
@@ -219,7 +220,7 @@ void CBossAlpha::Spawn( void )
 
 	ChangeTeam( TF_TEAM_RED );
 
-	TFGameRules()->SetActiveBoss( this );
+	TFGameRules()->AddActiveBoss( this );
 
 	// CollisionProp()->SetSurroundingBoundsType( USE_HITBOXES );
 
@@ -319,11 +320,6 @@ void CBossAlpha::ResetSkillShots( void )
 	m_damageSpongeSkillShotAmount = 0.0f;
 
 	m_isHardHitSkillShotDone = false;
-
-	if ( g_pMonsterResource )
-	{
-		g_pMonsterResource->HideSkillShotComboMeter();
-	}
 }
 
 
@@ -1074,7 +1070,7 @@ void CBossAlpha::Update( void )
 	if ( m_hateTauntTimer.IsElapsed() )
 	{
 		CUtlVector< CTFPlayer * > playerVector;
-		CollectPlayers( &playerVector, TF_TEAM_BLUE, COLLECT_ONLY_LIVING_PLAYERS );
+		CollectPlayers( &playerVector, TF_TEAM_RED, COLLECT_ONLY_LIVING_PLAYERS );
 
 		for( int i=0; i<playerVector.Count(); ++i )
 		{
@@ -1134,7 +1130,7 @@ void CBossAlpha::UpdateNearestVisibleEnemy( void )
 	// collect everyone
 	CUtlVector< CTFPlayer * > playerVector;
 	//CollectPlayers( &playerVector, TF_TEAM_RED, COLLECT_ONLY_LIVING_PLAYERS );
-	CollectPlayers( &playerVector, TF_TEAM_BLUE, COLLECT_ONLY_LIVING_PLAYERS, APPEND_PLAYERS );
+	CollectPlayers( &playerVector, TF_TEAM_RED, COLLECT_ONLY_LIVING_PLAYERS, APPEND_PLAYERS );
 
 	Vector myForward;
 	GetVectors( &myForward, NULL, NULL );

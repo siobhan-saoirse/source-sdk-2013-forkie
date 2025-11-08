@@ -90,7 +90,7 @@ void CBotNPCArcher::Spawn( void )
 	SetHealth( health );
 	SetMaxHealth( health );
 
-	ChangeTeam( TF_TEAM_RED );
+	ChangeTeam( TF_TEAM_BLUE );
 
 	Vector headPos;
 	QAngle headAngles;
@@ -253,7 +253,7 @@ public:
 	CTFPlayer *GetVictim( CBotNPCArcher *me )
 	{
 		CUtlVector< CTFPlayer * > playerVector;
-		CollectPlayers( &playerVector, TF_TEAM_BLUE, COLLECT_ONLY_LIVING_PLAYERS );
+		CollectPlayers( &playerVector, TF_TEAM_RED, COLLECT_ONLY_LIVING_PLAYERS );
 
 		CTFPlayer *closeVictim = NULL;
 		float victimRangeSq = FLT_MAX;

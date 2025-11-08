@@ -1394,7 +1394,6 @@ void BotGenerateAndWearItem( CTFPlayer *pBot, const char *itemName )
 	criteria.BAddCondition( "name", k_EOperator_String_EQ, itemName, true );
 
 	CBaseEntity *pItem = ItemGeneration()->GenerateRandomItem( &criteria, pBot->GetAbsOrigin(), vec3_angle );
-	pItem->SetClassname(TranslateWeaponEntForClass(pItem->GetClassname(), pBot->GetPlayerClass()->GetClassIndex()));
 	if ( pItem )
 	{
 		// If it's a weapon, remove the current one, and give us this one.
@@ -1409,6 +1408,7 @@ void BotGenerateAndWearItem( CTFPlayer *pBot, const char *itemName )
 		// Fake global id
 		static int s_nFakeID = 1;
 		static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem()->SetItemID( s_nFakeID++ );
+
 		DispatchSpawn( pItem );
 		static_cast<CEconEntity*>(pItem)->GiveTo( pBot );
 

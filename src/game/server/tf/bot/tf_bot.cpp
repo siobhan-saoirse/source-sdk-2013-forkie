@@ -708,9 +708,6 @@ DEFINE_SCRIPTFUNC_WRAPPED( SetBehaviorFlag, "Set the given behavior flag(s) for 
 DEFINE_SCRIPTFUNC_WRAPPED( ClearBehaviorFlag, "Clear the given behavior flag(s) for this bot" )
 DEFINE_SCRIPTFUNC_WRAPPED( IsBehaviorFlagSet, "Return true if the given behavior flag(s) are set for this bot" )
 
-DEFINE_SCRIPTFUNC_WRAPPED( SetActionPoint, "Set the given action point for this bot" )
-DEFINE_SCRIPTFUNC_WRAPPED( GetActionPoint, "Get the given action point for this bot" )
-
 END_SCRIPTDESC();
 
 //-----------------------------------------------------------------------------------------------------
@@ -4593,7 +4590,7 @@ Action< CTFBot > *CTFBot::OpportunisticallyUseWeaponAbilities( void )
 			if ( lunchbox->HasAmmo() )
 			{
 				// scout lunchboxes are also gated by their energy drink meter
-				if ( !IsPlayerClass( TF_CLASS_SCOUT ) && 2 * GetHealth() < GetMaxHealth() || m_Shared.GetScoutEnergyDrinkMeter() >= 100 )
+				if ( !IsPlayerClass( TF_CLASS_SCOUT ) && 2 * GetHealth() < GetMaxHealth() || IsPlayerClass(TF_CLASS_SCOUT) && m_Shared.GetScoutEnergyDrinkMeter() >= 100 )
 				{
 					return new CTFBotUseItem( lunchbox );
 				}

@@ -6340,7 +6340,7 @@ void CTFPlayer::HandleCommand_JoinTeam( const char *pTeamName )
 		}
 
 		DuelMiniGame_NotifyPlayerChangedTeam( this, iTeam, true );
-		ChangeTeam( iTeam, true );
+		ChangeTeam( iTeam );
 
 		return;
 	}
@@ -7776,14 +7776,14 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 				}
 
 				int iTeam = GetAutoTeam( nPreferedTeam );
-				ChangeTeam( iTeam, true, false );
+				ChangeTeam( iTeam );
 				ShowViewPortPanel( ( iTeam == TF_TEAM_RED ) ? PANEL_CLASS_RED : PANEL_CLASS_BLUE );
 			}
 #ifdef TF_RAID_MODE
 			else if ( TFGameRules()->IsBossBattleMode() )
 			{
 				int iTeam = GetAutoTeam();
-				ChangeTeam( iTeam, true );
+				ChangeTeam( iTeam );
 				ShowViewPortPanel( ( iTeam == TF_TEAM_RED ) ? PANEL_CLASS_RED : PANEL_CLASS_BLUE );
 			}
 #endif
@@ -16500,64 +16500,64 @@ bool CTFPlayer::SetObserverTarget(CBaseEntity *target)
 
 	return true;
 }
-
 //-----------------------------------------------------------------------------
-// Purpose: Find the nearest team member within the distance of the origin.
-//			Favor players who are the same class.
+// Purpose: Find the nearest observable entity within distance of the origin.
+//          Prefers teammates of the same class, but includes NPCs as fallback.
 //-----------------------------------------------------------------------------
-CBaseEntity *CTFPlayer::FindNearestObservableTarget( Vector vecOrigin, float flMaxDist )
+CBaseEntity* CTFPlayer::FindNearestObservableTarget(Vector vecOrigin, float flMaxDist)
 {
-	CTeam *pTeam = GetTeam();
-	CBaseEntity *pReturnTarget = NULL;
+	CTeam* pTeam = GetTeam();
+	CBaseEntity* pReturnTarget = NULL;
 	bool bFoundClass = false;
 	float flCurDistSqr = (flMaxDist * flMaxDist);
 	int iNumPlayers = pTeam->GetNumPlayers();
 
-	if ( pTeam->GetTeamNumber() == TEAM_SPECTATOR )
+	if (pTeam->GetTeamNumber() == TEAM_SPECTATOR)
 	{
 		iNumPlayers = gpGlobals->maxClients;
 	}
 
-
-	for ( int i = 0; i < iNumPlayers; i++ )
+	// ----------------------------------------------------------------------
+	// Step 1: Search for player teammates (standard TF2 logic)
+	// ----------------------------------------------------------------------
+	for (int i = 0; i < iNumPlayers; i++)
 	{
-		CTFPlayer *pPlayer = NULL;
+		CTFPlayer* pPlayer = NULL;
 
-		if ( pTeam->GetTeamNumber() == TEAM_SPECTATOR )
+		if (pTeam->GetTeamNumber() == TEAM_SPECTATOR)
 		{
-			pPlayer = ToTFPlayer( UTIL_PlayerByIndex( i ) );
+			pPlayer = ToTFPlayer(UTIL_PlayerByIndex(i));
 		}
 		else
 		{
-			pPlayer = ToTFPlayer( pTeam->GetPlayer(i) );
+			pPlayer = ToTFPlayer(pTeam->GetPlayer(i));
 		}
 
-		if ( !pPlayer )
+		if (!pPlayer)
 			continue;
 
-		if ( !IsValidObserverTarget(pPlayer) )
+		if (!IsValidObserverTarget(pPlayer))
 			continue;
 
-		float flDistSqr = ( pPlayer->GetAbsOrigin() - vecOrigin ).LengthSqr();
+		float flDistSqr = (pPlayer->GetAbsOrigin() - vecOrigin).LengthSqr();
 
-		if ( flDistSqr < flCurDistSqr )
+		if (flDistSqr < flCurDistSqr)
 		{
-			// If we've found a player matching our class already, this guy needs
-			// to be a matching class and closer to boot.
-			if ( !bFoundClass || pPlayer->IsPlayerClass( GetPlayerClass()->GetClassIndex() ) )
+			// Prefer same-class targets if found
+			if (!bFoundClass || pPlayer->IsPlayerClass(GetPlayerClass()->GetClassIndex()))
 			{
 				pReturnTarget = pPlayer;
 				flCurDistSqr = flDistSqr;
 
-				if ( pPlayer->IsPlayerClass( GetPlayerClass()->GetClassIndex() ) )
+				if (pPlayer->IsPlayerClass(GetPlayerClass()->GetClassIndex()))
 				{
 					bFoundClass = true;
 				}
 			}
 		}
-		else if ( !bFoundClass )
+		else if (!bFoundClass)
 		{
-			if ( pPlayer->IsPlayerClass( GetPlayerClass()->GetClassIndex() ) )
+			if (pPlayer->IsPlayerClass(GetPlayerClass()->GetClassIndex()))
 			{
 				pReturnTarget = pPlayer;
 				flCurDistSqr = flDistSqr;
@@ -16566,23 +16566,55 @@ CBaseEntity *CTFPlayer::FindNearestObservableTarget( Vector vecOrigin, float flM
 		}
 	}
 
-	if ( !bFoundClass && IsPlayerClass( TF_CLASS_ENGINEER ) )
+	// ----------------------------------------------------------------------
+	// Step 2: Engineers can watch their sentry if no teammates found
+	// ----------------------------------------------------------------------
+	if (!bFoundClass && IsPlayerClass(TF_CLASS_ENGINEER))
 	{
-		// let's spectate our sentry instead, we didn't find any other engineers to spec
 		int iNumObjects = GetObjectCount();
-		for ( int i=0;i<iNumObjects;i++ )
+		for (int i = 0; i < iNumObjects; i++)
 		{
-			CBaseObject *pObj = GetObject(i);
-
-			if ( pObj && pObj->GetType() == OBJ_SENTRYGUN )
+			CBaseObject* pObj = GetObject(i);
+			if (pObj && pObj->GetType() == OBJ_SENTRYGUN)
 			{
 				pReturnTarget = pObj;
+				break;
 			}
 		}
-	}		
+	}
+
+	// ----------------------------------------------------------------------
+	// Step 3: If still nothing, look for the nearest valid NPC
+	// ----------------------------------------------------------------------
+	if (!pReturnTarget)
+	{
+		CBaseEntity* pEnt = NULL;
+		float flBestDistSqr = flCurDistSqr;
+
+		while ((pEnt = gEntList.NextEnt(pEnt)) != NULL)
+		{
+			if (!pEnt->IsNPC())
+				continue;
+
+			if (!IsValidObserverTarget(pEnt))
+				continue;
+
+			// Optionally filter NPCs by team if they have one
+			if (pEnt->GetTeamNumber() != TEAM_UNASSIGNED && pEnt->GetTeamNumber() != GetTeamNumber())
+				continue;
+
+			float flDistSqr = (pEnt->GetAbsOrigin() - vecOrigin).LengthSqr();
+			if (flDistSqr < flBestDistSqr)
+			{
+				pReturnTarget = pEnt;
+				flBestDistSqr = flDistSqr;
+			}
+		}
+	}
 
 	return pReturnTarget;
 }
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
