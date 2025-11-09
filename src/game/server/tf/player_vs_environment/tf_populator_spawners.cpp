@@ -1265,7 +1265,7 @@ bool CTFBotSpawner::Spawn( const Vector &rawHere, EntityHandleVector_t *result )
 		else
 		{
 			// use the nifty new robot model
-			if ( nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER )
+			if ( nClassIndex >= TF_CLASS_SCOUT && nClassIndex <= TF_CLASS_ENGINEER && !GetPopulator()->GetManager()->IsPopFileEventType(MVM_EVENT_POPFILE_HALLOWEEN) )
 			{
 				if (tf_mvm_versus_enabled.GetBool()) {
 
