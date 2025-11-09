@@ -1438,6 +1438,7 @@ void CTFBot::PhysicsSimulate( void )
 	}
 }
 
+extern ConVar tf_mvm_versus_enabled;
 
 //-----------------------------------------------------------------------------------------------------
 void CTFBot::Touch( CBaseEntity *pOther )
@@ -1450,7 +1451,7 @@ void CTFBot::Touch( CBaseEntity *pOther )
 		if ( them->m_Shared.IsStealthed() || them->m_Shared.InCond( TF_COND_DISGUISED ) )
 		{
 			// bumped a spy - they are discovered!
-			if ( TFGameRules()->IsMannVsMachineMode() )	// we have to build up to knowing that they are a spy in MvM
+			if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !tf_mvm_versus_enabled.GetBool())	// we have to build up to knowing that they are a spy in MvM
 			{
 				SuspectSpy( them );
 			}
@@ -3066,10 +3067,30 @@ float CTFBot::GetThreatDanger( CBaseCombatCharacter *who ) const
 		}
 	}
 
+	// find the flag in the map
+	CCaptureFlag* pFlag = NULL;
+	for (int i = 0; i < ICaptureFlagAutoList::AutoList().Count(); ++i)
+	{
+		pFlag = static_cast<CCaptureFlag*>(ICaptureFlagAutoList::AutoList()[i]);
+		if (!pFlag->IsDisabled())
+		{
+			break;
+		}
+	}
+
 	if ( who->IsPlayer() )
 	{
 		CTFPlayer *player = ToTFPlayer( who );
 
+		// make sure it's being carried by one of the teams
+		if (pFlag && pFlag->IsStolen() && TFGameRules()->IsMannVsMachineMode())
+		{
+			CTFPlayer* pFlagCarrier = ToTFPlayer(pFlag->GetOwnerEntity());
+			if (pFlagCarrier == who)
+			{
+				return 10.0f; // immediate deadly danger
+			}
+		}
 		// ubers are scary
 		if ( player->m_Shared.IsInvulnerable() )
 			return 1.0f;
@@ -3292,7 +3313,7 @@ void CTFBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 			Weapon_Switch( Weapon_GetSlot( TF_WPN_TYPE_SECONDARY ) );
 			return;
 		}
-		if (this->GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+		if ( this->GetTeamNumber() == TF_TEAM_PVE_INVADERS && !tf_mvm_versus_enabled.GetBool() ) {
 			secondary = NULL;
 		}
 	}
@@ -3317,7 +3338,7 @@ void CTFBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 		gun = melee;
 	}
 
-	if ( IsDifficulty( CTFBot::EASY ) )
+	if ( IsDifficulty( CTFBot::EASY ) && !tf_mvm_versus_enabled.GetBool())
 	{
 		// easy bots always use their primary weapon if they have one
 		if ( gun )
@@ -3432,7 +3453,7 @@ void CTFBot::EquipBestWeaponForThreat( const CKnownEntity *threat )
 bool CTFBot::EquipLongRangeWeapon( void )
 {
 	// no secondary weapons in MvM
-	if ( TFGameRules()->IsMannVsMachineMode() )
+	if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS && !tf_mvm_versus_enabled.GetBool() )
 		return false;
 
 	if ( IsPlayerClass( TF_CLASS_SOLDIER ) || 
@@ -4104,7 +4125,7 @@ bool CTFBot::ShouldFireCompressionBlast( void )
 		}
 	}
 
-	bool shouldPushPlayers = !TFGameRules()->IsMannVsMachineMode();
+	bool shouldPushPlayers = !TFGameRules()->IsMannVsMachineMode() && !tf_mvm_versus_enabled.GetBool();
 
 	if ( shouldPushPlayers )
 	{
@@ -4811,7 +4832,7 @@ void CTFBot::OnEventChangeAttributes( const CTFBot::EventChangeAttributes_t* pEv
 
 		SetMaxVisionRangeOverride( pEvent->m_maxVisionRange );
 
-		if ( TFGameRules()->IsMannVsMachineMode() )
+		if ( TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_INVADERS )
 		{
 			SetAttribute( CTFBot::BECOME_SPECTATOR_ON_DEATH );
 			SetAttribute( CTFBot::RETAIN_BUILDINGS );

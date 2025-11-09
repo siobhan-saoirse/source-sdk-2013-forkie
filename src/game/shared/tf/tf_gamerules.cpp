@@ -1013,6 +1013,7 @@ ConVar tf_mvm_respec_limit( "tf_mvm_respec_limit", "0", FCVAR_CHEAT | FCVAR_REPL
 ConVar tf_mvm_respec_credit_goal( "tf_mvm_respec_credit_goal", "2000", FCVAR_CHEAT | FCVAR_REPLICATED, "When tf_mvm_respec_limit is non-zero, the total amount of money the team must collect to earn a respec credit." );
 ConVar tf_mvm_buybacks_method( "tf_mvm_buybacks_method", "0", FCVAR_REPLICATED | FCVAR_HIDDEN, "When set to 0, use the traditional, currency-based system.  When set to 1, use finite, charge-based system.", true, 0.0, true, 1.0 );
 ConVar tf_mvm_buybacks_per_wave( "tf_mvm_buybacks_per_wave", "3", FCVAR_REPLICATED | FCVAR_HIDDEN, "The fixed number of buybacks players can use per-wave." );
+ConVar tf_mvm_versus_enabled("tf_mvm_versus_enabled", "0", FCVAR_HIDDEN | FCVAR_REPLICATED, "Mann v.s. Machine Versus Mode");
 
 
 #ifdef GAME_DLL
@@ -2365,7 +2366,7 @@ ETFMatchGroup CTFGameRules::GetCurrentMatchGroup() const
 	return GTFGCClientSystem()->BConnectedToMatchServer( false ) ? (ETFMatchGroup)m_nMatchGroupType.Get() : k_eTFMatchGroup_Invalid;
 #endif
 	*/
-	return TFGameRules()->IsMannVsMachineMode() ? k_eTFMatchGroup_MvM_MannUp : k_eTFMatchGroup_Invalid;
+	return k_eTFMatchGroup_Invalid;
 }
 
 bool CTFGameRules::IsManagedMatchEnded() const
@@ -19561,7 +19562,9 @@ void CTFGameRules::FireGameEvent( IGameEvent *event )
 
 				for( int i=0; i<playerVector.Count(); ++i )
 				{
-					playerVector[i]->ChangeTeam( TEAM_SPECTATOR, false, true );
+					if (playerVector[i]->IsBot()) {
+						playerVector[i]->ChangeTeam(TEAM_SPECTATOR, false, true);
+					}
 				}
 			}
 		}
@@ -22687,7 +22690,7 @@ int CTFGameRules::GetTeamAssignmentOverride( CTFPlayer *pTFPlayer, int iDesiredT
 
 	if ( IsMannVsMachineMode() )
 	{
-		if ( !pTFPlayer->IsBot() && iTeam != TEAM_SPECTATOR )
+		if ( !pTFPlayer->IsBot() && iTeam != TEAM_SPECTATOR && !tf_mvm_versus_enabled.GetBool() )
 		{
 			if ( pMatchPlayer && !pMatchPlayer->bDropped )
 			{

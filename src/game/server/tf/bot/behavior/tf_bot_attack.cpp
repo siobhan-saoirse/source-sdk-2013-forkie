@@ -44,6 +44,17 @@ ActionResult< CTFBot >	CTFBotAttack::Update( CTFBot *me, float interval )
 		return Done( "No threat" );
 	}
 
+	// find the flag in the map
+	CCaptureFlag* pFlag = NULL;
+	for (int i = 0; i < ICaptureFlagAutoList::AutoList().Count(); ++i)
+	{
+		pFlag = static_cast<CCaptureFlag*>(ICaptureFlagAutoList::AutoList()[i]);
+		if (!pFlag->IsDisabled())
+		{
+			break;
+		}
+	}
+
 	me->EquipBestWeaponForThreat( threat );
 
 	if ( isUsingCloseRangeWeapon && threat->IsVisibleRecently() && me->IsRangeLessThan( threat->GetLastKnownPosition(), 1.1f * me->GetDesiredAttackRange() ) )

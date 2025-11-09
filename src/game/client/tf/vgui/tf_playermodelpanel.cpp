@@ -141,7 +141,6 @@ CTFPlayerModelPanel::CTFPlayerModelPanel( vgui::Panel *pParent, const char *pNam
 	m_bDrawTauntParticles = false;
 	m_strPlayerModelOverride = "";
 }
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2951,3 +2950,6 @@ int CTFPlayerModelPanel::FlexControllerLocalToGlobal( const flexsettinghdr_t *pS
 	return index;
 }
 
+void CTFPlayerModelPanel::SetModelOverride(const char* pszModelOverride) {
+	m_strPlayerModelOverride = pszModelOverride;
+}

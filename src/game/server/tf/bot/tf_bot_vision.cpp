@@ -406,7 +406,7 @@ bool CTFBotVision::IsVisibleEntityNoticed( CBaseEntity *subject ) const
 			return false;
 		}
 
-		if ( TFGameRules()->IsMannVsMachineMode() )	// in MvM mode, forget spies as soon as they are fully disguised
+		if ( TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_INVADERS )	// in MvM mode, forget spies as soon as they are fully disguised
 		{
 			CTFBot::SuspectedSpyInfo_t* pSuspectInfo = me->IsSuspectedSpy( player );
 			// But only if we aren't suspecting them currently.  This happens when we bump into them.
@@ -426,7 +426,7 @@ bool CTFBotVision::IsVisibleEntityNoticed( CBaseEntity *subject ) const
 			return true;
 		}
 
-		if ( !TFGameRules()->IsMannVsMachineMode() )	// ignore in MvM mode
+		if ( !TFGameRules()->IsMannVsMachineMode() && me->GetTeamNumber() == TF_TEAM_PVE_INVADERS )	// ignore in MvM mode
 		{
 			if ( player->IsPlacingSapper() )
 			{

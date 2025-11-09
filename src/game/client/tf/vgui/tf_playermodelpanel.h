@@ -63,6 +63,7 @@ public:
 	virtual bool	CheckEvent( float currenttime, CChoreoScene *scene, CChoreoEvent *event );
 	virtual void	SetupFlexWeights( void );
 
+	void	SetModelOverride(const char* pszModelOverride);
 	// IHasLocalToGlobalFlexSettings
 	virtual void	EnsureTranslations( const flexsettinghdr_t *pSettinghdr );
 	int				FlexControllerLocalToGlobal( const flexsettinghdr_t *pSettinghdr, int key );

@@ -113,6 +113,7 @@
 #include "tf_player_resource.h"
 #include "gcsdk/gcclient_sharedobjectcache.h"
 #include "tf_party.h"
+#include "tf_shareddefs.h"
 
 #ifdef TF_RAID_MODE
 #include "bot_npc/bot_npc_decoy.h"
@@ -169,7 +170,8 @@ extern ConVar	tf_bot_quota_mode;
 extern ConVar	tf_bot_quota;
 extern ConVar	halloween_starting_souls;
 
-extern ConVar tf_powerup_mode_killcount_timer_length;	
+extern ConVar tf_powerup_mode_killcount_timer_length;
+extern ConVar tf_mvm_versus_enabled;
 
 float GetCurrentGravity( void );
 
@@ -3939,7 +3941,17 @@ void CTFPlayer::Spawn()
 		ResetMaxHealthDrain();
 		SetHealth( GetMaxHealth() );
 	}
-
+	if (TFGameRules()->IsMannVsMachineMode() && tf_mvm_versus_enabled.GetBool()) {
+		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
+			if (g_pFullFileSystem->FileExists(g_szPlayerRobotModels[nClassIndex]))
+			{
+				GetPlayerClass()->SetCustomModel(g_szPlayerRobotModels[nClassIndex], USE_CLASS_ANIMATIONS);
+				UpdateModel();
+				SetBloodColor(DONT_BLEED);
+			}
+		}
+	}
 	SetContextThink( &CTFPlayer::PostSpawnThink, gpGlobals->curtime + 0.1f, "PostSpawnThink" );
 }
 
@@ -6074,8 +6086,10 @@ int CTFPlayer::GetAutoTeam( int nPreferedTeam /*= TF_TEAM_AUTOASSIGN*/ )
 						}
 					}
 				}
-
-				return TFGameRules()->GetTeamAssignmentOverride( this, TF_TEAM_PVE_DEFENDERS );
+				if (!tf_mvm_versus_enabled.GetBool())
+				{
+					return TFGameRules()->GetTeamAssignmentOverride(this, TF_TEAM_PVE_DEFENDERS);
+				}
 			}
 		}
 
@@ -6246,7 +6260,7 @@ void CTFPlayer::HandleCommand_JoinTeam( const char *pTeamName )
 
 	if ( stricmp( pTeamName, "auto" ) == 0 )
 	{	
-		iTeam = GetAutoTeam();
+		iTeam = GetAutoTeam(); 
 		bAutoTeamed = true;
 	}
 	else if ( stricmp( pTeamName, "spectate" ) == 0 )
@@ -7346,10 +7360,15 @@ bool CTFPlayer::ClientCommand( const CCommand &args )
 			return true;
 
 		SetNextChangeTeamTime( gpGlobals->curtime + 2.0f );  // limit to one change every 2 secs
-
+		if (tf_mvm_versus_enabled.GetBool()) {
+			AddFlag(FL_FAKECLIENT);
+		}
 		if ( args.ArgC() >= 2 )
 		{
 			HandleCommand_JoinTeam( args[1] );
+		}
+		if (tf_mvm_versus_enabled.GetBool()) {
+			RemoveFlag(FL_FAKECLIENT);
 		}
 		return true;
 	}

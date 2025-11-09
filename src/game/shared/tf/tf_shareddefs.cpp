@@ -126,10 +126,10 @@ const char g_szPlayerRobotModels[][MAX_PATH] =
 	"models/bots/sniper/bot_sniper_human_anim.mdl",
 	"models/bots/soldier/bot_soldier_human_anim.mdl",
 	"models/bots/demo/bot_demo_human_anim.mdl",
-	"models/bots/medic/bot_medic_human_anims.mdl",
-	"models/bots/heavy/bot_heavy_human_anims.mdl",
+	"models/bots/medic/bot_medic_human_anim.mdl",
+	"models/bots/heavy/bot_heavy_human_anim.mdl",
 	"models/bots/pyro/bot_pyro_human_anim.mdl",
-	"models/bots/spy/bot_spy_human_anims.mdl",
+	"models/bots/spy/bot_spy_human_anim.mdl",
 	"models/bots/engineer/bot_engineer_human_anim.mdl",
 };
 
