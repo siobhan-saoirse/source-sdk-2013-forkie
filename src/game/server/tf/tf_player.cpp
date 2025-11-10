@@ -11147,7 +11147,13 @@ void CTFPlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &
 
 		if ( bPlayspeech )
 		{
-			SpeakConceptIfAllowed( MP_CONCEPT_KILLED_PLAYER, modifiers );
+			if (TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
+			{
+				SpeakConceptIfAllowed(MP_CONCEPT_MVM_TAUNT, modifiers);
+			}
+			else {
+				SpeakConceptIfAllowed(MP_CONCEPT_KILLED_PLAYER, modifiers);
+			}
 		}
 
 		CTFWeaponBase *pWeapon = dynamic_cast<CTFWeaponBase *>(info.GetWeapon());
@@ -17876,7 +17882,7 @@ void CTFPlayer::Taunt( taunts_t iTauntIndex, int iTauntConcept )
 				if ( m_Shared.GetRageMeter() >= 100.f )
 				{
 					m_Shared.m_bRageDraining = true;
-					EmitSound( "Heavy.Battlecry03" );
+					SpeakConceptIfAllowed(MP_CONCEPT_MVM_DEPLOY_RAGE);
 					return;
 				}
 

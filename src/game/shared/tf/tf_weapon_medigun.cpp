@@ -602,7 +602,7 @@ bool CWeaponMedigun::AllowedToHealTarget( CBaseEntity *pTarget )
 		if ( !pTarget->InSameTeam( pOwner ) )
 			return false;
 
-		if ( pTarget->IsBaseObject() )
+		if ( pTarget->IsBaseObject() && TFGameRules() && !TFGameRules()->IsMannVsMachineMode())
 			return false;
 
 		CTFReviveMarker *pReviveMarker = dynamic_cast< CTFReviveMarker* >( pTarget );

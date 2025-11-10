@@ -2169,11 +2169,11 @@ void CWave::WaveCompleteUpdate( void )
 	if ( bLastWave && !GetManager()->IsInEndlessWaves() )
 	{
 		GetManager()->MvMVictory();
+		TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_WAVE_WIN, TF_TEAM_PVE_DEFENDERS);
 
 		if ( TFGameRules() )
 		{
 			TFGameRules()->BroadcastSound( 255, "Announcer.MVM_Manned_Up_Wave_End" );
-			TFGameRules()->BroadcastSound( 255, "music.mvm_end_last_wave" );
 		}
 
 		event = gameeventmanager->CreateEvent( "mvm_mission_complete" );
@@ -2188,6 +2188,7 @@ void CWave::WaveCompleteUpdate( void )
 		if ( TFGameRules() )
 		{
 			TFGameRules()->BroadcastSound( 255,"Announcer.MVM_Wave_End" );
+			TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_WAVE_WIN, TF_TEAM_PVE_DEFENDERS);
 
 			if( bHasTank )
 			{

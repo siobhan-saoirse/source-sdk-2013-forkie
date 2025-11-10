@@ -13313,17 +13313,11 @@ int CTFPlayerShared::GetSequenceForDeath( CBaseAnimating* pRagdoll, bool bBurnin
 	if ( !pRagdoll )
 		return -1;
 
-	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
-	{
-		if ( m_pOuter && ( m_pOuter->GetTeamNumber() == TF_TEAM_PVE_INVADERS ) )
-			return -1;
-	}
-
 	int iDeathSeq = -1;
-// 	if ( bBurning )
-// 	{
-// 		iDeathSeq = pRagdoll->LookupSequence( "primary_death_burning" );
-// 	}
+ 	if ( bBurning )
+ 	{
+ 		iDeathSeq = pRagdoll->LookupSequence( "primary_death_burning" );
+ 	}
 
 	switch ( nCustomDeath )
 	{

@@ -55,6 +55,11 @@
 #include "saverestore_utlvector.h"
 #include "eventqueue.h"
 
+#ifdef TF_DLL
+#include "tf_shareddefs.h"
+#include "tf_gamerules.h"
+#endif
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -561,6 +566,9 @@ void CNPC_Strider::Spawn()
 
 	m_hPlayersMissile.Set( NULL );
 	m_flTimeNextHuntSound = gpGlobals->curtime - 1.0f;
+#ifdef TF_DLL
+	TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_GIANT_CALLOUT, TF_TEAM_PVE_DEFENDERS);
+#endif
 }
 
 void CNPC_Strider::SetupGlobalModelData()
@@ -2982,6 +2990,9 @@ void CNPC_Strider::DeathSound( const CTakeDamageInfo &info )
 	}
 
 	EmitSound( "NPC_Strider.Death" );
+	#ifdef TF_DLL
+		TFGameRules()->HaveAllPlayersSpeakConceptIfAllowed(MP_CONCEPT_MVM_GIANT_KILLED, TF_TEAM_PVE_DEFENDERS);
+	#endif
 }
 
 //---------------------------------------------------------
@@ -3114,6 +3125,11 @@ int CNPC_Strider::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 				}
 			}
 
+			if (info.GetDamageType() & DMG_CRITICAL)
+			{
+				damage *= 3;
+			}
+
 			m_iHealth -= damage;
 
 			m_OnDamaged.FireOutput( info.GetAttacker(), this);
@@ -3204,7 +3220,7 @@ int CNPC_Strider::TakeDamageFromCombineBall( const CTakeDamageInfo &info )
 	}
 
 	AddFacingTarget( info.GetInflictor(), info.GetInflictor()->GetAbsOrigin(), 0.5, 2.0 );
-	if ( !UTIL_IsAR2CombineBall( info.GetInflictor() ) )
+	if ( !UTIL_IsAR2CombineBall( info.GetInflictor() ) || info.GetDamageType() & DMG_CRITICAL )
 		RestartGesture( ACT_GESTURE_BIG_FLINCH );
 	else
 		RestartGesture( ACT_GESTURE_SMALL_FLINCH );
@@ -3329,6 +3345,9 @@ bool CNPC_Strider::ShouldExplodeFromDamage( const CTakeDamageInfo &info )
 	CBaseEntity *pAttacker = info.GetAttacker();
 	if ( pAttacker != NULL && (FClassnameIs( pAttacker, "weapon_striderbuster" ) ||
 								FClassnameIs( pAttacker, "npc_grenade_magna" )))
+		return true;
+
+	if ( info.GetDamageType() & DMG_BLAST )
 		return true;
 
 	if ( pInflictor == this && pAttacker == this )

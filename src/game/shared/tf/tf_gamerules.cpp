@@ -950,7 +950,7 @@ ConVar tf_medieval( "tf_medieval", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable
 #endif 
 				    );
 
-ConVar tf_medieval_autorp( "tf_medieval_autorp", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Medieval Mode auto-roleplaying.\n", true, 0, true, 1 );
+ConVar tf_medieval_autorp( "tf_medieval_autorp", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enable Medieval Mode auto-roleplaying.\n", true, 0, true, 1 );
 
 ConVar tf_sticky_radius_ramp_time( "tf_sticky_radius_ramp_time", "2.0", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Amount of time to get full radius after arming" );
 ConVar tf_sticky_airdet_radius( "tf_sticky_airdet_radius", "0.85", FCVAR_DEVELOPMENTONLY | FCVAR_CHEAT | FCVAR_REPLICATED, "Radius Scale if detonated in the air" );
@@ -991,19 +991,19 @@ ConVar tf_training_client_message( "tf_training_client_message", "0", FCVAR_REPL
 
 #ifdef TF_RAID_MODE
 // Raid mode
-ConVar tf_gamemode_raid( "tf_gamemode_raid", "0", FCVAR_REPLICATED | FCVAR_NOTIFY );		// client needs access to this for IsRaidMode()
-ConVar tf_raid_enforce_unique_classes( "tf_raid_enforce_unique_classes", "0", FCVAR_REPLICATED | FCVAR_NOTIFY );
-ConVar tf_raid_respawn_time( "tf_raid_respawn_time", "5", FCVAR_REPLICATED | FCVAR_NOTIFY /*| FCVAR_CHEAT*/, "How long it takes for a Raider to respawn with his team after death." );
-ConVar tf_raid_allow_all_classes( "tf_raid_allow_all_classes", "1", FCVAR_REPLICATED | FCVAR_NOTIFY );
+ConVar tf_gamemode_raid( "tf_gamemode_raid", "0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED | FCVAR_NOTIFY );		// client needs access to this for IsRaidMode()
+ConVar tf_raid_enforce_unique_classes( "tf_raid_enforce_unique_classes", "0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED | FCVAR_NOTIFY );
+ConVar tf_raid_respawn_time( "tf_raid_respawn_time", "5", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED | FCVAR_NOTIFY /*| FCVAR_CHEAT*/, "How long it takes for a Raider to respawn with his team after death." );
+ConVar tf_raid_allow_all_classes( "tf_raid_allow_all_classes", "1", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED | FCVAR_NOTIFY );
 
-ConVar tf_gamemode_boss_battle( "tf_gamemode_boss_battle", "0", FCVAR_REPLICATED | FCVAR_NOTIFY );
+ConVar tf_gamemode_boss_battle( "tf_gamemode_boss_battle", "0", FCVAR_DEVELOPMENTONLY | FCVAR_REPLICATED | FCVAR_NOTIFY );
 
 #ifdef GAME_DLL
 ConVar tf_raid_allow_overtime( "tf_raid_allow_overtime", "0"/*, FCVAR_CHEAT*/ );
 #endif // GAME_DLL
 #endif // TF_RAID_MODE
 
-ConVar tf_mvm_defenders_team_size( "tf_mvm_defenders_team_size", "6", FCVAR_REPLICATED | FCVAR_NOTIFY, "Maximum number of defenders in MvM" );
+ConVar tf_mvm_defenders_team_size( "tf_mvm_defenders_team_size", "10", FCVAR_REPLICATED | FCVAR_NOTIFY, "Maximum number of defenders in MvM" );
 ConVar tf_mvm_max_connected_players( "tf_mvm_max_connected_players", "10", FCVAR_GAMEDLL, "Maximum number of connected real players in MvM" );
 ConVar tf_mvm_max_invaders( "tf_mvm_max_invaders", "22", FCVAR_GAMEDLL, "Maximum number of invaders in MvM" );
 
@@ -1013,7 +1013,7 @@ ConVar tf_mvm_respec_limit( "tf_mvm_respec_limit", "0", FCVAR_CHEAT | FCVAR_REPL
 ConVar tf_mvm_respec_credit_goal( "tf_mvm_respec_credit_goal", "2000", FCVAR_CHEAT | FCVAR_REPLICATED, "When tf_mvm_respec_limit is non-zero, the total amount of money the team must collect to earn a respec credit." );
 ConVar tf_mvm_buybacks_method( "tf_mvm_buybacks_method", "0", FCVAR_REPLICATED | FCVAR_HIDDEN, "When set to 0, use the traditional, currency-based system.  When set to 1, use finite, charge-based system.", true, 0.0, true, 1.0 );
 ConVar tf_mvm_buybacks_per_wave( "tf_mvm_buybacks_per_wave", "3", FCVAR_REPLICATED | FCVAR_HIDDEN, "The fixed number of buybacks players can use per-wave." );
-ConVar tf_mvm_versus_enabled("tf_mvm_versus_enabled", "0", FCVAR_HIDDEN | FCVAR_REPLICATED, "Mann v.s. Machine Versus Mode");
+ConVar tf_mvm_versus_enabled("tf_mvm_versus_enabled", "0", FCVAR_REPLICATED, "EXPERIMENTAL - Mann v.s. Machine Versus Mode");
 
 
 #ifdef GAME_DLL
@@ -1025,7 +1025,7 @@ extern ConVar mp_tournament_post_match_period;
 
 extern ConVar tf_flag_return_on_touch;
 extern ConVar tf_flag_return_time_credit_factor;
-ConVar tf_grapplinghook_enable( "tf_grapplinghook_enable", "0", FCVAR_REPLICATED );
+ConVar tf_grapplinghook_enable( "tf_grapplinghook_enable", "1", FCVAR_REPLICATED );
 
 #ifdef GAME_DLL
 CUtlString s_strNextMvMPopFile;
@@ -1198,7 +1198,7 @@ ConVar tf_gamemode_mvm ( "tf_gamemode_mvm", "0", FCVAR_REPLICATED | FCVAR_NOTIFY
 ConVar tf_gamemode_passtime ( "tf_gamemode_passtime", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 ConVar tf_gamemode_misc ( "tf_gamemode_misc", "0", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
 
-ConVar tf_bot_count( "tf_bot_count", "0", FCVAR_NOTIFY | FCVAR_DEVELOPMENTONLY );
+ConVar tf_bot_count( "tf_bot_count", "0", FCVAR_NOTIFY | FCVAR_HIDDEN );
 
 #ifdef _DEBUG
 ConVar tf_debug_ammo_and_health( "tf_debug_ammo_and_health", "0", FCVAR_CHEAT );
@@ -1265,12 +1265,12 @@ void cc_powerup_mode( IConVar *pConVar, const char *pOldString, float flOldValue
 	}
 }
 
-ConVar tf_powerup_mode( "tf_powerup_mode", "0", FCVAR_NOTIFY, "Enable/disable powerup mode. Not compatible with Mann Vs Machine mode", cc_powerup_mode );
-ConVar tf_powerup_mode_imbalance_delta( "tf_powerup_mode_imbalance_delta", "24", FCVAR_CHEAT, "Powerup kill score lead one team must have before imbalance measures are initiated" );
-ConVar tf_powerup_mode_imbalance_consecutive_min_players( "tf_powerup_mode_imbalance_consecutive_min_players", "10", FCVAR_CHEAT, "Minimum number of players on the server before consecutive imbalance measures trigger team balancing" );
-ConVar tf_powerup_mode_imbalance_consecutive_time( "tf_powerup_mode_imbalance_consecutive_time", "1200", FCVAR_CHEAT, "Teams are balanced if consecutive imbalance measures for the same team are triggered in less time (seconds)" );
-ConVar tf_powerup_mode_dominant_multiplier( "tf_powerup_mode_dominant_multiplier", "3", FCVAR_CHEAT, "The multiple by which a player must exceed the median kills by in order to be considered dominant" );
-ConVar tf_powerup_mode_killcount_timer_length( "tf_powerup_mode_killcount_timer_length", "300", FCVAR_CHEAT, "How long to wait between kill count tests that determine if a player is dominating" ); //should be a multiple of 60 because we use this to calculate an integer
+ConVar tf_powerup_mode( "tf_powerup_mode", "0", FCVAR_NOTIFY | FCVAR_HIDDEN, "Enable/disable powerup mode. Not compatible with Mann Vs Machine mode", cc_powerup_mode );
+ConVar tf_powerup_mode_imbalance_delta( "tf_powerup_mode_imbalance_delta", "24", FCVAR_CHEAT | FCVAR_HIDDEN, "Powerup kill score lead one team must have before imbalance measures are initiated" );
+ConVar tf_powerup_mode_imbalance_consecutive_min_players( "tf_powerup_mode_imbalance_consecutive_min_players", "10", FCVAR_CHEAT | FCVAR_HIDDEN, "Minimum number of players on the server before consecutive imbalance measures trigger team balancing" );
+ConVar tf_powerup_mode_imbalance_consecutive_time( "tf_powerup_mode_imbalance_consecutive_time", "1200", FCVAR_CHEAT | FCVAR_HIDDEN, "Teams are balanced if consecutive imbalance measures for the same team are triggered in less time (seconds)" );
+ConVar tf_powerup_mode_dominant_multiplier( "tf_powerup_mode_dominant_multiplier", "3", FCVAR_CHEAT | FCVAR_HIDDEN, "The multiple by which a player must exceed the median kills by in order to be considered dominant" );
+ConVar tf_powerup_mode_killcount_timer_length( "tf_powerup_mode_killcount_timer_length", "300", FCVAR_CHEAT | FCVAR_HIDDEN, "How long to wait between kill count tests that determine if a player is dominating" ); //should be a multiple of 60 because we use this to calculate an integer
 
 ConVar tf_skillrating_update_interval( "tf_skillrating_update_interval", "180", FCVAR_ARCHIVE, "How often to update the GC and OGS." );
 
