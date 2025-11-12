@@ -14,44 +14,46 @@ struct GifFileType;
 class CGIFHelper
 {
 public:
-	CGIFHelper( void );
-	~CGIFHelper( void ) { CloseImage(); }
+	CGIFHelper(void);
+	~CGIFHelper(void) { CloseImage(); }
 
-	bool BOpenImage( CUtlBuffer &bufImage );
-	void CloseImage( void );
+	bool BOpenImage(CUtlBuffer& bufImage);
+	void CloseImage(void);
 
-	bool BIsProcessed( void ) const { return m_bProcessed; }
+	void DestroyTexture(void);
 
-	bool BNextFrame( void ); // iterates to the next frame, returns true if we have just looped
-	int  GetFrameCount( void ) const;
-	int  GetSelectedFrame( void ) const { return m_iSelectedFrame; }
-	bool BShouldIterateFrame( void ) const { return m_dIterateTime < Plat_FloatTime(); }
+	bool BIsProcessed(void) const { return m_bProcessed; }
+
+	bool BNextFrame(void); // iterates to the next frame, returns true if we have just looped
+	int  GetFrameCount(void) const;
+	int  GetSelectedFrame(void) const { return m_iSelectedFrame; }
+	bool BShouldIterateFrame(void) const { return m_dIterateTime < Plat_FloatTime(); }
 
 	// !!! Methods below will only work when the texture has been fully processed !!! //
 
 	// Main method for retrieving selected frame texture data.
 	// The output texture format is IMAGE_FORMAT_DXT1_RUNTIME.
-	uint8 *FrameData( void );
+	uint8* FrameData(void);
 
 	// Gets the resolution of the texture.
-	void   FrameSize( int &nWide, int &nTall ) const;
+	void   FrameSize(int& nWide, int& nTall) const;
 
 private:
 	// Background worker for processing GIFs to textures
 	class CGifTextureProcThread : public CThread
 	{
 	public:
-		CGifTextureProcThread( CGIFHelper *pOuter );
+		CGifTextureProcThread(CGIFHelper* pOuter);
 
 	protected:
-		virtual int Run( void );
+		virtual int Run(void);
 
 	private:
-		CGIFHelper *m_pOuter;
+		CGIFHelper* m_pOuter;
 	};
 
-	GifFileType *m_pImage;
-	IVTFTexture *m_pTexture;
+	GifFileType* m_pImage;
+	IVTFTexture* m_pTexture;
 	bool         m_bProcessed;
 
 	int m_iSelectedFrame;

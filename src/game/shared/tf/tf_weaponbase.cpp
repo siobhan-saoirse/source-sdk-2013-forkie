@@ -1233,7 +1233,7 @@ bool CTFWeaponBase::Deploy( void )
 		if ( !pPlayer )
 			return false;
 
-		float flWeaponSwitchTime = 0.5f;
+		float flWeaponSwitchTime = 0.67f;
 
 		// Overrides the anim length for calculating ready time.
 		float flDeployTimeMultiplier = 1.0f;

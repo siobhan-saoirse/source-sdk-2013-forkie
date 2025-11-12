@@ -137,7 +137,7 @@ ConVar cl_gunlowerspeed( "cl_gunlowerspeed", "2", FCVAR_CLIENTDLL | FCVAR_CHEAT 
 
 ConVar tf_use_min_viewmodels( "tf_use_min_viewmodels", "0", FCVAR_ARCHIVE, "Use minimized viewmodels." );
 
-ConVar tf_viewmodels_offset_override( "tf_viewmodels_offset_override", "", FCVAR_CHEAT, "If set, this will override the position of all viewmodels. Usage 'x y z'" );
+ConVar tf_viewmodels_offset_override( "tf_viewmodels_offset_override", "", FCVAR_ARCHIVE, "If set, this will override the position of all viewmodels. Usage 'x y z'" );
 #endif
 
 void CTFViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosition, const QAngle& eyeAngles )
@@ -228,9 +228,14 @@ void CTFViewModel::CalcViewModelView( CBasePlayer *owner, const Vector& eyePosit
 			{
 				viewmodelOffset = pWeapon->GetViewmodelOffset();
 			}
-			Vector vOffset = viewmodelOffset.x * forward + viewmodelOffset.y * right + viewmodelOffset.z * up;
-			vOffset *= Gain( 1.f - s_inspectInterp, 0.5f );
-			vecNewOrigin += vOffset;
+			if ((viewmodelOffset.x < -10 || viewmodelOffset.x > 1 || viewmodelOffset.y < -7 || viewmodelOffset.y > 7 || viewmodelOffset.z < -2 || viewmodelOffset.z > 2)) {
+
+			}
+			else {
+				Vector vOffset = viewmodelOffset.x * forward + viewmodelOffset.y * right + viewmodelOffset.z * up;
+				vOffset *= Gain(1.f - s_inspectInterp, 0.5f);
+				vecNewOrigin += vOffset;
+			}
 		}
 	}
 
