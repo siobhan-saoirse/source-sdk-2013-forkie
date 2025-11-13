@@ -614,6 +614,7 @@ bool CTFWeaponBaseMelee::OnSwingHit( trace_t &trace )
 				WeaponSound(MELEE_HIT);	
 			}
 			else {
+				WeaponSound(MELEE_HIT);
 				WeaponSound(MELEE_BURST);
 			}
 		}

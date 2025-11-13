@@ -2150,6 +2150,13 @@ bool CBaseObject::Construct( float flHealth )
 	return false;
 }
 
+bool CBaseObject::CanBeUpgraded() {
+
+	int iUpgradeMiniSentry = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(GetBuilder(), iUpgradeMiniSentry, upgrade_mini_sentry);
+	return !(IsDisposableBuilding() || IsMiniBuilding() && iUpgradeMiniSentry == 0); 
+}
+
 //----------------------------------------------------------------------------------------------------------------------------------------
 void CBaseObject::OnConstructionHit( CTFPlayer *pPlayer, CTFWrench *pWrench, Vector hitLoc )
 {
@@ -2936,7 +2943,10 @@ bool CBaseObject::CanBeUpgraded( CTFPlayer *pPlayer )
 	if ( IsUpgrading() )
 		return false;
 
-	if ( IsMiniBuilding() || IsDisposableBuilding() )
+	int iUpgradeMiniSentry = 0;
+	CALL_ATTRIB_HOOK_INT_ON_OTHER(pPlayer, iUpgradeMiniSentry, upgrade_mini_sentry);
+
+	if ( IsMiniBuilding() && iUpgradeMiniSentry == 0 || IsDisposableBuilding() )
 		return false;
 
 	// only engineers

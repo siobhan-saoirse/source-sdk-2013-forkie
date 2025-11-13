@@ -9955,7 +9955,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 					if ( !FVisible( pTFBlastVictim, MASK_OPAQUE ) )
 						continue;
 
-					pTFBlastVictim->m_Shared.MakeBleed( pTFGasTosser, pGasCan, 0.1f, 350.f, false, TF_DMG_CUSTOM_BURNING );
+					pTFBlastVictim->m_Shared.MakeBleed( pTFGasTosser, pGasCan, 0.1f, 150.f, false, TF_DMG_CUSTOM_BURNING );
 					DispatchParticleEffect( "dragons_fury_effect", pTFBlastVictim->GetAbsOrigin(), vec3_angle );
 					bExploded = true;
 				}

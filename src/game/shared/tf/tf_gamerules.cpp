@@ -22879,6 +22879,7 @@ bool CTFGameRules::CanUpgradeWithAttrib( CTFPlayer *pPlayer, int iWeaponSlot, at
 	{
 		switch ( iAttribIndex )
 		{
+		case 882:	// upgrade_mini_sentry
 		case 113:	// "metal regen"
 			{
 				return ( pPlayer->IsPlayerClass( TF_CLASS_ENGINEER ) );

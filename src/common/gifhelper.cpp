@@ -206,149 +206,159 @@ int CGIFHelper::CGifTextureProcThread::Run(void)
     Q_memset(pubPrevious, 0, cubComposite);
 
     // Process every GIF frame
-    for (int iFrame = 0; iFrame < pImage->ImageCount; ++iFrame)
-    {
-        GifImageDesc& imageDesc = pImage->SavedImages[iFrame].ImageDesc;
-        ColorMapObject* pColorMap = imageDesc.ColorMap ? imageDesc.ColorMap : pImage->SColorMap;
+    try {
 
-        int nTransparentIndex = NO_TRANSPARENT_COLOR;
-        int nDisposalMethod = DISPOSAL_UNSPECIFIED;
-        GraphicsControlBlock gcb;
-        if (DGifSavedExtensionToGCB(pImage, iFrame, &gcb) == GIF_OK)
+        for (int iFrame = 0; iFrame < pImage->ImageCount; ++iFrame)
         {
-            nTransparentIndex = gcb.TransparentColor;
-            nDisposalMethod = gcb.DisposalMode;
-        }
+            GifImageDesc& imageDesc = pImage->SavedImages[iFrame].ImageDesc;
+            ColorMapObject* pColorMap = imageDesc.ColorMap ? imageDesc.ColorMap : pImage->SColorMap;
 
-        // Draw over previous composite
-        Q_memcpy(pubComposite, pubPrevious, cubComposite);
-
-        // Render this frame onto the composite
-        auto lambdaRenderFrameToComposite = [&](int nRowOffset = 0, int nRowIncrement = 1)
+            int nTransparentIndex = NO_TRANSPARENT_COLOR;
+            int nDisposalMethod = DISPOSAL_UNSPECIFIED;
+            GraphicsControlBlock gcb;
+            if (DGifSavedExtensionToGCB(pImage, iFrame, &gcb) == GIF_OK)
             {
-                int iPixel = nRowOffset * imageDesc.Width;
-                for (int y = nRowOffset; y < imageDesc.Height; y += nRowIncrement)
+                nTransparentIndex = gcb.TransparentColor;
+                nDisposalMethod = gcb.DisposalMode;
+            }
+
+            // Draw over previous composite
+            Q_memcpy(pubComposite, pubPrevious, cubComposite);
+
+            // Render this frame onto the composite
+            auto lambdaRenderFrameToComposite = [&](int nRowOffset = 0, int nRowIncrement = 1)
                 {
-                    const int nScreenY = y + imageDesc.Top;
-                    if (nScreenY >= nScreenTall) { iPixel += imageDesc.Width; continue; }
-
-                    uint8* pubScanLine = pubComposite + (nScreenY * cubScreenStride) + (imageDesc.Left * k_nBytesPerPixel);
-                    for (int x = 0; x < imageDesc.Width; ++x, ++iPixel)
+                    int iPixel = nRowOffset * imageDesc.Width;
+                    for (int y = nRowOffset; y < imageDesc.Height; y += nRowIncrement)
                     {
-                        const int nScreenX = x + imageDesc.Left;
-                        if (nScreenX >= nScreenWide) continue;
+                        const int nScreenY = y + imageDesc.Top;
+                        if (nScreenY >= nScreenTall) { iPixel += imageDesc.Width; continue; }
 
-                        GifByteType idx = pImage->SavedImages[iFrame].RasterBits[iPixel];
-                        if (idx < pColorMap->ColorCount && idx != nTransparentIndex)
+                        uint8* pubScanLine = pubComposite + (nScreenY * cubScreenStride) + (imageDesc.Left * k_nBytesPerPixel);
+                        for (int x = 0; x < imageDesc.Width; ++x, ++iPixel)
                         {
-                            const GifColorType& color = pColorMap->Colors[idx];
-                            pubScanLine[0] = color.Red;
-                            pubScanLine[1] = color.Green;
-                            pubScanLine[2] = color.Blue;
+                            const int nScreenX = x + imageDesc.Left;
+                            if (nScreenX >= nScreenWide) continue;
+
+                            GifByteType idx = pImage->SavedImages[iFrame].RasterBits[iPixel];
+                            if (idx < pColorMap->ColorCount && idx != nTransparentIndex)
+                            {
+                                const GifColorType& color = pColorMap->Colors[idx];
+                                pubScanLine[0] = color.Red;
+                                pubScanLine[1] = color.Green;
+                                pubScanLine[2] = color.Blue;
+                            }
+                            pubScanLine += k_nBytesPerPixel;
                         }
-                        pubScanLine += k_nBytesPerPixel;
                     }
-                }
-            };
+                };
 
-        if (imageDesc.Interlace)
-        {
-            // https://giflib.sourceforge.net/gifstandard/GIF89a.html#interlacedimages
-            constexpr int k_nRowOffsets[] = { 0, 4, 2, 1 };
-            constexpr int k_nRowIncrements[] = { 8, 8, 4, 2 };
-            for (int nPass = 0; nPass < 4; ++nPass)
+            if (imageDesc.Interlace)
             {
-                lambdaRenderFrameToComposite(k_nRowOffsets[nPass], k_nRowIncrements[nPass]);
-            }
-        }
-        else
-        {
-            lambdaRenderFrameToComposite();
-        }
-
-        const int cubTextureStride = pTexture->RowSizeInBytes(0);
-        uint8* pubTextureBase = pTexture->ImageData(iFrame, 0, 0);
-        // Do bilinear resampling from GIF image size to VTF texture size
-        for (int y = 0; y < pTexture->Height(); ++y)
-        {
-            // Compute fractional xy positions from source
-            float flScreenY = ((y + 0.5f) * nScreenTall / (float)pTexture->Height()) - .5f;
-
-            int y0 = (int)floor(flScreenY);
-            int y1 = Min(y0 + 1, nScreenTall - 1);
-            float fy = flScreenY - y0;
-            y0 = Max(y0, 0);
-
-            uint8* pubScanLine = pubTextureBase + y * cubTextureStride;
-
-            for (int x = 0; x < pTexture->Width(); ++x)
-            {
-                float flScreenX = ((x + 0.5f) * nScreenWide / (float)pTexture->Width()) - .5f;
-
-                int x0 = (int)floor(flScreenX);
-                int x1 = Min(x0 + 1, nScreenWide - 1);
-                float fx = flScreenX - x0;
-                x0 = Max(x0, 0);
-
-                // Get closest 2x2 neighborhood of pixels
-                const uint8* p00 = pubComposite + (y0 * cubScreenStride) + (x0 * k_nBytesPerPixel);
-                const uint8* p10 = pubComposite + (y0 * cubScreenStride) + (x1 * k_nBytesPerPixel);
-                const uint8* p01 = pubComposite + (y1 * cubScreenStride) + (x0 * k_nBytesPerPixel);
-                const uint8* p11 = pubComposite + (y1 * cubScreenStride) + (x1 * k_nBytesPerPixel);
-                // Do interp each channel
-                for (int c = 0; c < k_nBytesPerPixel; ++c)
+                // https://giflib.sourceforge.net/gifstandard/GIF89a.html#interlacedimages
+                constexpr int k_nRowOffsets[] = { 0, 4, 2, 1 };
+                constexpr int k_nRowIncrements[] = { 8, 8, 4, 2 };
+                for (int nPass = 0; nPass < 4; ++nPass)
                 {
-                    float c00 = p00[c];
-                    float c10 = p10[c];
-                    float c01 = p01[c];
-                    float c11 = p11[c];
-                    float c0 = c00 + fx * (c10 - c00);
-                    float c1 = c01 + fx * (c11 - c01);
-                    pubScanLine[x * k_nBytesPerPixel + c] = (uint8)(c0 + fy * (c1 - c0));
+                    lambdaRenderFrameToComposite(k_nRowOffsets[nPass], k_nRowIncrements[nPass]);
                 }
             }
-        }
-
-        // Handle disposal for the next frame
-        switch (nDisposalMethod)
-        {
-        case DISPOSE_BACKGROUND:
-            // Fill previous with background color
-            if (pImage->SBackGroundColor < pImage->SColorMap->ColorCount)
+            else
             {
-                const GifColorType& color = pImage->SColorMap->Colors[pImage->SBackGroundColor];
-                const int nFillWide = Min(imageDesc.Width, nScreenWide - imageDesc.Left);
-                const int nFillTall = Min(imageDesc.Height, nScreenTall - imageDesc.Top);
+                lambdaRenderFrameToComposite();
+            }
 
-                for (int y = 0; y < nFillTall; ++y)
+            const int cubTextureStride = pTexture->RowSizeInBytes(0);
+            uint8* pubTextureBase = pTexture->ImageData(iFrame, 0, 0);
+            // Do bilinear resampling from GIF image size to VTF texture size
+            for (int y = 0; y < pTexture->Height(); ++y)
+            {
+                // Compute fractional xy positions from source
+                float flScreenY = ((y + 0.5f) * nScreenTall / (float)pTexture->Height()) - .5f;
+
+                int y0 = (int)floor(flScreenY);
+                int y1 = Min(y0 + 1, nScreenTall - 1);
+                float fy = flScreenY - y0;
+                y0 = Max(y0, 0);
+
+                uint8* pubScanLine = pubTextureBase + y * cubTextureStride;
+
+                for (int x = 0; x < pTexture->Width(); ++x)
                 {
-                    uint8* pubScanLine = pubPrevious + ((y + imageDesc.Top) * cubScreenStride) + imageDesc.Left * k_nBytesPerPixel;
+                    float flScreenX = ((x + 0.5f) * nScreenWide / (float)pTexture->Width()) - .5f;
 
-                    for (int x = 0; x < nFillWide; ++x)
+                    int x0 = (int)floor(flScreenX);
+                    int x1 = Min(x0 + 1, nScreenWide - 1);
+                    float fx = flScreenX - x0;
+                    x0 = Max(x0, 0);
+
+                    // Get closest 2x2 neighborhood of pixels
+                    const uint8* p00 = pubComposite + (y0 * cubScreenStride) + (x0 * k_nBytesPerPixel);
+                    const uint8* p10 = pubComposite + (y0 * cubScreenStride) + (x1 * k_nBytesPerPixel);
+                    const uint8* p01 = pubComposite + (y1 * cubScreenStride) + (x0 * k_nBytesPerPixel);
+                    const uint8* p11 = pubComposite + (y1 * cubScreenStride) + (x1 * k_nBytesPerPixel);
+                    // Do interp each channel
+                    for (int c = 0; c < k_nBytesPerPixel; ++c)
                     {
-                        pubScanLine[0] = color.Red;
-                        pubScanLine[1] = color.Green;
-                        pubScanLine[2] = color.Blue;
-                        pubScanLine += k_nBytesPerPixel;
+                        float c00 = p00[c];
+                        float c10 = p10[c];
+                        float c01 = p01[c];
+                        float c11 = p11[c];
+                        float c0 = c00 + fx * (c10 - c00);
+                        float c1 = c01 + fx * (c11 - c01);
+                        pubScanLine[x * k_nBytesPerPixel + c] = (uint8)(c0 + fy * (c1 - c0));
                     }
                 }
+            } 
+
+            // Handle disposal for the next frame
+            switch (nDisposalMethod)
+            {
+            case DISPOSE_BACKGROUND:
+                // Fill previous with background color
+                try {
+
+                    if (pImage->SBackGroundColor < pImage->SColorMap->ColorCount)
+                    {
+                        const GifColorType& color = pImage->SColorMap->Colors[pImage->SBackGroundColor];
+                        const int nFillWide = Min(imageDesc.Width, nScreenWide - imageDesc.Left);
+                        const int nFillTall = Min(imageDesc.Height, nScreenTall - imageDesc.Top);
+
+                        for (int y = 0; y < nFillTall; ++y)
+                        {
+                            uint8* pubScanLine = pubPrevious + ((y + imageDesc.Top) * cubScreenStride) + imageDesc.Left * k_nBytesPerPixel;
+
+                            for (int x = 0; x < nFillWide; ++x)
+                            {
+                                pubScanLine[0] = color.Red;
+                                pubScanLine[1] = color.Green;
+                                pubScanLine[2] = color.Blue;
+                                pubScanLine += k_nBytesPerPixel;
+                            }
+                        }
+                    }
+                }
+                catch (...) {
+
+                }
+                break;
+            case DISPOSE_PREVIOUS:
+                // Keep previous composite
+                break;
+            case DISPOSAL_UNSPECIFIED:
+            case DISPOSE_DO_NOT:
+            default:
+                // Copy current composite to previous
+                Q_memcpy(pubPrevious, pubComposite, cubComposite);
+                break;
             }
-            break;
-        case DISPOSE_PREVIOUS:
-            // Keep previous composite
-            break;
-        case DISPOSAL_UNSPECIFIED:
-        case DISPOSE_DO_NOT:
-        default:
-            // Copy current composite to previous
-            Q_memcpy(pubPrevious, pubComposite, cubComposite);
-            break;
         }
+
+        pTexture->ConvertImageFormat(IMAGE_FORMAT_DXT1_RUNTIME, false);
+
+        m_pOuter->m_bProcessed = true;
     }
-
-    pTexture->ConvertImageFormat(IMAGE_FORMAT_DXT1_RUNTIME, false);
-
-    m_pOuter->m_bProcessed = true;
-
+    catch (...) {
+    }
     return 0;
 }
