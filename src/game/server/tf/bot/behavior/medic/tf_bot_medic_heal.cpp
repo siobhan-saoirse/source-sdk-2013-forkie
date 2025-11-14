@@ -701,7 +701,7 @@ ActionResult< CTFBot >	CTFBotMedicHeal::Update( CTFBot *me, float interval )
 		}
 		
 		// try to activate shield when I'm not using uber so I don't waste it
-		if ( TFGameRules()->IsMannVsMachineMode() && me->HasAttribute( CTFBot::PROJECTILE_SHIELD ) )
+		if ( TFGameRules()->IsMannVsMachineMode() && me->HasAttribute( CTFBot::PROJECTILE_SHIELD ) || !TFGameRules()->IsMannVsMachineMode() )
 		{
 			isUsingProjectileShield = me->m_Shared.IsRageDraining();
 			// when the rage is ready to deploy and we're not using uber

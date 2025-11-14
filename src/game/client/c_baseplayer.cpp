@@ -1726,6 +1726,7 @@ void C_BasePlayer::CalcFreezeCamView( Vector& eyeOrigin, QAngle& eyeAngles, floa
 	}
 }
 
+
 void C_BasePlayer::CalcInEyeCamView(Vector& eyeOrigin, QAngle& eyeAngles, float& fov)
 {
 	C_BaseEntity *target = GetObserverTarget();

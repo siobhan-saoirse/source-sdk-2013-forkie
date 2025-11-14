@@ -1523,6 +1523,86 @@ void CBasePlayer::ResetObserverMode()
 #endif
 }
 
+
+#define	HL2_BOB_CYCLE_MIN	1.0f
+#define	HL2_BOB_CYCLE_MAX	0.4f
+#define	HL2_BOB			0.01f
+#define	HL2_BOB_UP		0.5f
+extern float	g_lateralBob;
+extern float	g_verticalBob;
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Output : float
+//-----------------------------------------------------------------------------
+float CalcViewmodelBob(CBasePlayer* tfPlayer)
+{
+	static	float bobtime;
+	static	float lastbobtime;
+	float	cycle;
+
+	CBasePlayer* player = ToBasePlayer(tfPlayer);
+	//Assert( player );
+
+	//NOTENOTE: For now, let this cycle continue when in the air, because it snaps badly without it
+
+	if ((!gpGlobals->frametime) || (player == NULL))
+	{
+		//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
+		return 0.0f;// just use old value
+	}
+
+	//Find the speed of the player
+	float speed = player->GetLocalVelocity().Length2D();
+
+	//FIXME: This maximum speed value must come from the server.
+	//		 MaxSpeed() is not sufficient for dealing with sprinting - jdw
+
+	speed = clamp(speed, -320, 320);
+
+	float bob_offset = RemapVal(speed, 0, 320, 0.0f, 1.0f);
+
+	bobtime += (gpGlobals->curtime - lastbobtime) * bob_offset;
+	lastbobtime = gpGlobals->curtime;
+
+	//Calculate the vertical bob
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX) * HL2_BOB_CYCLE_MAX;
+	cycle /= HL2_BOB_CYCLE_MAX;
+
+	if (cycle < HL2_BOB_UP)
+	{
+		cycle = M_PI * cycle / HL2_BOB_UP;
+	}
+	else
+	{
+		cycle = M_PI + M_PI * (cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
+	}
+
+	g_verticalBob = speed * 0.005f;
+	g_verticalBob = g_verticalBob * 0.3 + g_verticalBob * 0.7 * sin(cycle);
+
+	g_verticalBob = clamp(g_verticalBob, -7.0f, 4.0f);
+
+	//Calculate the lateral bob
+	cycle = bobtime - (int)(bobtime / HL2_BOB_CYCLE_MAX * 2) * HL2_BOB_CYCLE_MAX * 2;
+	cycle /= HL2_BOB_CYCLE_MAX * 2;
+
+	if (cycle < HL2_BOB_UP)
+	{
+		cycle = M_PI * cycle / HL2_BOB_UP;
+	}
+	else
+	{
+		cycle = M_PI + M_PI * (cycle - HL2_BOB_UP) / (1.0 - HL2_BOB_UP);
+	}
+
+	g_lateralBob = speed * 0.005f;
+	g_lateralBob = g_lateralBob * 0.3 + g_lateralBob * 0.7 * sin(cycle);
+	g_lateralBob = clamp(g_lateralBob, -7.0f, 4.0f);
+
+	//NOTENOTE: We don't use this return value in our case (need to restructure the calculation function setup!)
+	return 0.0f;
+}
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : eyeOrigin - 
@@ -1605,11 +1685,15 @@ void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 #endif
 
 #if defined( CLIENT_DLL )
-	if ( !prediction->InPrediction() )
+		
 #endif
 	{
 		SmoothViewOnStairs( eyeOrigin );
 	}
+
+	CalcViewmodelBob(this);
+	// Apply vertical bob
+	eyeOrigin[2] += g_verticalBob;
 
 	// Snack off the origin before bob + water offset are applied
 	Vector vecBaseEyePosition = eyeOrigin;

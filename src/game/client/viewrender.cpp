@@ -2969,7 +2969,6 @@ void CViewRender::GetWaterLODParams( float &flCheapWaterStartDistance, float &fl
 	flCheapWaterStartDistance = m_flCheapWaterStartDistance;
 	flCheapWaterEndDistance = m_flCheapWaterEndDistance;
 }
-
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &view - 
