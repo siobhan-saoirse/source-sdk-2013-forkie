@@ -3941,11 +3941,8 @@ void CTFPlayer::Spawn()
 		ResetMaxHealthDrain();
 		SetHealth( GetMaxHealth() );
 	}
-	if (TFGameRules()->IsMannVsMachineMode() && IsBot() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
-		GrantOrRemoveAllUpgrades(false, true);
-	}
 	if (TFGameRules()->IsMannVsMachineMode() && tf_mvm_versus_enabled.GetBool()) {
-		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot()) {
+		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot()) {	
 			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
 			if (g_pFullFileSystem->FileExists(g_szPlayerRobotModels[nClassIndex]) && TFObjectiveResource()->GetMvMEventPopfileType() != MVM_EVENT_POPFILE_HALLOWEEN)
 			{
@@ -4557,142 +4554,144 @@ void CTFPlayer::ManageRegularWeapons( TFPlayerClassData_t *pData )
 		bool bItemsChanged = false;
 
 		// Now Loop through our inventory for the current class, and give us any items we don't have.
-		int iClass = GetPlayerClass()->GetClassIndex();
-		if ( iClass > TF_CLASS_UNDEFINED && iClass < TF_CLASS_COUNT )
-		{
-			CSteamID ownerSteamID;
-			GetSteamID( &ownerSteamID );
 
-			for ( int i = 0; i < CLASS_LOADOUT_POSITION_COUNT; i++ )
+			int iClass = GetPlayerClass()->GetClassIndex();
+			if (iClass > TF_CLASS_UNDEFINED && iClass < TF_CLASS_COUNT)
 			{
-				// bots don't need the action slot item for MvM (canteen)
- 				if ( ( i == LOADOUT_POSITION_ACTION ) && IsBot() && TFGameRules() && TFGameRules()->IsMannVsMachineMode() && ( GetTeamNumber() == TF_TEAM_PVE_INVADERS ) )
- 					continue;
+				CSteamID ownerSteamID;
+				GetSteamID(&ownerSteamID);
 
-				m_EquippedLoadoutItemIndices[i] = LOADOUT_SLOT_USE_BASE_ITEM;
-
-				// use base items in training mode
-				CEconItemView *pItem = GetLoadoutItem( iClass, i, true );
-				if ( !pItem || !pItem->IsValid() )
-					continue;
-
-				if ( !ItemIsAllowed( pItem ) )
-					continue;
-
-				// Only do this for taunts, because other items will be caught by the dynamic model loading system. 
-				if ( IsTauntSlot( i ) )
+				for (int i = 0; i < CLASS_LOADOUT_POSITION_COUNT; i++)
 				{
-					tmZone( TELEMETRY_LEVEL0, TMZF_NONE, "%s - Precaching taunts, etc", __FUNCTION__ );
-					// This has to be done before the continue for "no_entity", because we're trying to precache taunts which
-					// explicitly bail out there.
-					precacheStrings.RemoveAll();
-					pItem->GetItemDefinition()->GeneratePrecacheModelStrings( false, &precacheStrings );
-					FOR_EACH_VEC( precacheStrings, iModel )
+					// bots don't need the action slot item for MvM (canteen)
+					if ((i == LOADOUT_POSITION_ACTION) && IsBot() && TFGameRules() && TFGameRules()->IsMannVsMachineMode() && (GetTeamNumber() == TF_TEAM_PVE_INVADERS))
+						continue;
+
+					m_EquippedLoadoutItemIndices[i] = LOADOUT_SLOT_USE_BASE_ITEM;
+
+					// use base items in training mode
+					CEconItemView* pItem = GetLoadoutItem(iClass, i, true);
+					if (!pItem || !pItem->IsValid())
+						continue;
+
+					if (!ItemIsAllowed(pItem))
+						continue;
+
+					// Only do this for taunts, because other items will be caught by the dynamic model loading system. 
+					if (IsTauntSlot(i))
 					{
-						if ( precacheStrings[iModel] && ( *precacheStrings[iModel] ) )
+						tmZone(TELEMETRY_LEVEL0, TMZF_NONE, "%s - Precaching taunts, etc", __FUNCTION__);
+						// This has to be done before the continue for "no_entity", because we're trying to precache taunts which
+						// explicitly bail out there.
+						precacheStrings.RemoveAll();
+						pItem->GetItemDefinition()->GeneratePrecacheModelStrings(false, &precacheStrings);
+						FOR_EACH_VEC(precacheStrings, iModel)
 						{
-							PrecacheModel( precacheStrings[iModel], false );
+							if (precacheStrings[iModel] && (*precacheStrings[iModel]))
+							{
+								PrecacheModel(precacheStrings[iModel], false);
+							}
 						}
 					}
-				}
 
-				m_EquippedLoadoutItemIndices[i] = pItem->GetItemID();
+					m_EquippedLoadoutItemIndices[i] = pItem->GetItemID();
 
-				Assert( pItem->GetStaticData()->GetItemClass() );
-				if ( pItem->GetStaticData()->GetItemClass() && FStrEq( pItem->GetStaticData()->GetItemClass(), "no_entity" ) )
-					continue;
+					Assert(pItem->GetStaticData()->GetItemClass());
+					if (pItem->GetStaticData()->GetItemClass() && FStrEq(pItem->GetStaticData()->GetItemClass(), "no_entity"))
+						continue;
 
-				CTFWeaponBase *pCurrentWeaponOfType = NULL;
-				bool bAlreadyHave = false;
-				// Don't need to check weapons if it's a wearable-only slot
-				if ( !IsWearableSlot(i) || pItem->GetItemDefinition()->IsActingAsAWeapon() )
-				{
-					// Weapon slot. Check out weapons to see if we have it.
-					for ( int wpn = 0; wpn < MAX_WEAPONS; wpn++ )
+					CTFWeaponBase* pCurrentWeaponOfType = NULL;
+					bool bAlreadyHave = false;
+					// Don't need to check weapons if it's a wearable-only slot
+					if (!IsWearableSlot(i) || pItem->GetItemDefinition()->IsActingAsAWeapon())
 					{
-						CTFWeaponBase *pWeapon = (CTFWeaponBase *)GetWeapon(wpn);
-						if ( !pWeapon )
-							continue;
-
-						if ( ItemsMatch( pData, pWeapon->GetAttributeContainer()->GetItem(), pItem, pWeapon ) )
+						// Weapon slot. Check out weapons to see if we have it.
+						for (int wpn = 0; wpn < MAX_WEAPONS; wpn++)
 						{
-							pCurrentWeaponOfType = pWeapon;
-							bAlreadyHave = true;
-							break;
+							CTFWeaponBase* pWeapon = (CTFWeaponBase*)GetWeapon(wpn);
+							if (!pWeapon)
+								continue;
+
+							if (ItemsMatch(pData, pWeapon->GetAttributeContainer()->GetItem(), pItem, pWeapon))
+							{
+								pCurrentWeaponOfType = pWeapon;
+								bAlreadyHave = true;
+								break;
+							}
 						}
 					}
-				}
 
-				CEconWearable *pWearable = NULL;
-				if ( !bAlreadyHave )
-				{
-					// We couldn't find a matching weapon. See if we have a matching wearable.
-					for ( int wbl = 0; wbl < m_hMyWearables.Count(); wbl++ )
+					CEconWearable* pWearable = NULL;
+					if (!bAlreadyHave)
 					{
-						pWearable = m_hMyWearables[wbl];
-						if ( !pWearable )
-							continue;
-
-						CEconItemView *pWearableView = pWearable->GetAttributeContainer()->GetItem();
-						if ( ItemsMatch( pData, pWearableView, pItem ) )
+						// We couldn't find a matching weapon. See if we have a matching wearable.
+						for (int wbl = 0; wbl < m_hMyWearables.Count(); wbl++)
 						{
-							bAlreadyHave = true;
-							break;
+							pWearable = m_hMyWearables[wbl];
+							if (!pWearable)
+								continue;
+
+							CEconItemView* pWearableView = pWearable->GetAttributeContainer()->GetItem();
+							if (ItemsMatch(pData, pWearableView, pItem))
+							{
+								bAlreadyHave = true;
+								break;
+							}
 						}
 					}
-				}
 
-				if ( !bAlreadyHave && pItem->GetStaticData()->GetItemClass() )
-				{
-					CEconEntity *pNewItem = dynamic_cast<CEconEntity*>(GiveNamedItem( pItem->GetStaticData()->GetItemClass(), 0, pItem ));
-					Assert( pNewItem );
-					if ( pNewItem )
+					if (!bAlreadyHave && pItem->GetStaticData()->GetItemClass())
 					{
-						pNewItem->GetAttributeContainer()->GetItem()->SetOverrideAccountID( ownerSteamID.GetAccountID() );
-
-						CTFWeaponBuilder *pBuilder = dynamic_cast<CTFWeaponBuilder*>( (CBaseEntity*)pNewItem );
-						if ( pBuilder )
+						CEconEntity* pNewItem = dynamic_cast<CEconEntity*>(GiveNamedItem(pItem->GetStaticData()->GetItemClass(), 0, pItem));
+						Assert(pNewItem);
+						if (pNewItem)
 						{
-							pBuilder->SetSubType( pData->m_aBuildable[0] );
-						}
+							pNewItem->GetAttributeContainer()->GetItem()->SetOverrideAccountID(ownerSteamID.GetAccountID());
 
-						CBaseCombatWeapon* pWeapon = dynamic_cast< CBaseCombatWeapon* >( pNewItem );
-						if ( pWeapon )
-						{
-							pWeapon->SetSoundsEnabled( false );
-						}
-						
-						pNewItem->GiveTo( this );
+							CTFWeaponBuilder* pBuilder = dynamic_cast<CTFWeaponBuilder*>((CBaseEntity*)pNewItem);
+							if (pBuilder)
+							{
+								pBuilder->SetSubType(pData->m_aBuildable[0]);
+							}
 
-						// set the default item charge meter value for this new weapon
-						m_Shared.SetItemChargeMeter( loadout_positions_t( i ), pNewItem->GetDefaultItemChargeMeterValue() );
+							CBaseCombatWeapon* pWeapon = dynamic_cast<CBaseCombatWeapon*>(pNewItem);
+							if (pWeapon)
+							{
+								pWeapon->SetSoundsEnabled(false);
+							}
 
-						if ( pWeapon )
-						{
-							pWeapon->SetSoundsEnabled( true );
+							pNewItem->GiveTo(this);
+
+							// set the default item charge meter value for this new weapon
+							m_Shared.SetItemChargeMeter(loadout_positions_t(i), pNewItem->GetDefaultItemChargeMeterValue());
+
+							if (pWeapon)
+							{
+								pWeapon->SetSoundsEnabled(true);
+							}
 						}
 					}
-				}
-				else
-				{
-					if ( pCurrentWeaponOfType )
+					else
 					{
-						pCurrentWeaponOfType->UpdateExtraWearables();
+						if (pCurrentWeaponOfType)
+						{
+							pCurrentWeaponOfType->UpdateExtraWearables();
 
-						// We need to ensure all hands pointers are updated for all weapons.
-						// Otherwise we could end up using animation sequences from the wrong class hands.
-						pCurrentWeaponOfType->UpdateHands();
+							// We need to ensure all hands pointers are updated for all weapons.
+							// Otherwise we could end up using animation sequences from the wrong class hands.
+							pCurrentWeaponOfType->UpdateHands();
+						}
 					}
-				}
 
-				bItemsChanged |= !bAlreadyHave;
-			} // For each item in load out
-		}
+					bItemsChanged |= !bAlreadyHave;
+				} // For each item in load out
+			}
 
 		if ( bItemsChanged )
 		{
 			CTF_GameStats.Event_PlayerLoadoutChanged( this, false );			
 		}
+
 		// We may have added weapons that make others invalid. Recheck.
 		ValidateWeapons( pData, false );
 
@@ -5398,6 +5397,27 @@ void CTFPlayer::PostInventoryApplication( void )
 	m_iPlayerSkinOverride = iPlayerSkinOverride;
 
 	m_Inventory.ClearClassLoadoutChangeTracking();
+
+
+	if (IsBot()) {
+
+		CTFBot* bot = ToTFBot(this);
+		if (bot) {
+			if (!TFGameRules()->IsMannVsMachineMode() || TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
+				RemoveAllItems();
+				bot->GiveRandomItem(LOADOUT_POSITION_PRIMARY);
+				bot->GiveRandomItem(LOADOUT_POSITION_SECONDARY);
+				bot->GiveRandomItem(LOADOUT_POSITION_MELEE);
+				bot->GiveRandomItem(LOADOUT_POSITION_HEAD);
+				bot->GiveRandomItem(LOADOUT_POSITION_MISC);
+				bot->GiveRandomItem(LOADOUT_POSITION_MISC2);
+				bot->GiveRandomItem(LOADOUT_POSITION_BUILDING);
+				bot->GiveRandomItem(LOADOUT_POSITION_PDA);
+				bot->GiveRandomItem(LOADOUT_POSITION_PDA2);
+			}
+		}
+
+	}
 }
 
 //-----------------------------------------------------------------------------
