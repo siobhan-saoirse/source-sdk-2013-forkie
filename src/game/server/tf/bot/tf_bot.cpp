@@ -4125,7 +4125,7 @@ bool CTFBot::ShouldFireCompressionBlast( void )
 		}
 	}
 
-	bool shouldPushPlayers = !TFGameRules()->IsMannVsMachineMode() && !tf_mvm_versus_enabled.GetBool();
+	bool shouldPushPlayers = !TFGameRules()->IsMannVsMachineMode() || (TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) || (TFGameRules()->IsMannVsMachineMode() && tf_mvm_versus_enabled.GetBool());
 
 	if ( shouldPushPlayers )
 	{

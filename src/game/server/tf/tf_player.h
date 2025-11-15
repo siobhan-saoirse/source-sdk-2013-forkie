@@ -148,6 +148,7 @@ public:
 	virtual void		InitialSpawn();
 	static void			PrecacheMvM();
 	static void			PrecacheKart();
+	void AddItem(const char* pszItemName);
 private:
 	static void			PrecachePlayerModels();
 	static void			PrecacheTFPlayer();

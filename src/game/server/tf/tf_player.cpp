@@ -3941,14 +3941,29 @@ void CTFPlayer::Spawn()
 		ResetMaxHealthDrain();
 		SetHealth( GetMaxHealth() );
 	}
+	if (TFGameRules()->IsMannVsMachineMode() && IsBot() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
+		GrantOrRemoveAllUpgrades(false, true);
+	}
 	if (TFGameRules()->IsMannVsMachineMode() && tf_mvm_versus_enabled.GetBool()) {
-		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS) {
+		if (GetTeamNumber() == TF_TEAM_PVE_INVADERS && !IsBot()) {
 			int nClassIndex = (GetPlayerClass() ? GetPlayerClass()->GetClassIndex() : TF_CLASS_UNDEFINED);
-			if (g_pFullFileSystem->FileExists(g_szPlayerRobotModels[nClassIndex]))
+			if (g_pFullFileSystem->FileExists(g_szPlayerRobotModels[nClassIndex]) && TFObjectiveResource()->GetMvMEventPopfileType() != MVM_EVENT_POPFILE_HALLOWEEN)
 			{
 				GetPlayerClass()->SetCustomModel(g_szPlayerRobotModels[nClassIndex], USE_CLASS_ANIMATIONS);
 				UpdateModel();
 				SetBloodColor(DONT_BLEED);
+				AddItem(g_szRomePromoItems_Hat[nClassIndex]);
+				AddItem(g_szRomePromoItems_Misc[nClassIndex]);
+			}
+			else {
+
+				// zombies use the original player models
+				m_nSkin = 4;
+
+				const char* name = g_aRawPlayerClassNamesShort[nClassIndex];
+
+				AddItem(CFmtStr("Zombie %s", name));
+
 			}
 		}
 	}
@@ -13680,7 +13695,7 @@ void CTFPlayer::StateEnterWELCOME( void )
 			data->SetBool( "unload", sv_motd_unload_on_dismissal.GetBool() );
 
 			ShowViewPortPanel( PANEL_INFO, true, data );
-
+			
 			data->deleteThis();
 		}
 		else
@@ -13691,6 +13706,76 @@ void CTFPlayer::StateEnterWELCOME( void )
 		m_bSeenRoundInfo = false;
 	}
 
+}
+
+void CTFPlayer::AddItem(const char* pszItemName)
+{
+	CItemSelectionCriteria criteria;
+	criteria.SetQuality(AE_USE_SCRIPT_VALUE);
+	criteria.BAddCondition("name", k_EOperator_String_EQ, pszItemName, true);
+
+	CBaseEntity* pItem = ItemGeneration()->GenerateRandomItem(&criteria, WorldSpaceCenter(), vec3_angle);
+	if (pItem)
+	{
+		CEconItemView* pScriptItem = static_cast<CBaseCombatWeapon*>(pItem)->GetAttributeContainer()->GetItem();
+
+		// If we already have an item in that slot, remove it
+		int iClass = GetPlayerClass()->GetClassIndex();
+		int iSlot = pScriptItem->GetStaticData()->GetLoadoutSlot(iClass);
+		equip_region_mask_t unNewItemRegionMask = pScriptItem->GetItemDefinition() ? pScriptItem->GetItemDefinition()->GetEquipRegionConflictMask() : 0;
+
+		if (IsWearableSlot(iSlot))
+		{
+			// Remove any wearable that has a conflicting equip_region
+			for (int wbl = 0; wbl < GetNumWearables(); wbl++)
+			{
+				CEconWearable* pWearable = GetWearable(wbl);
+				if (!pWearable)
+					continue;
+
+				equip_region_mask_t unWearableRegionMask = 0;
+				if (pWearable->GetAttributeContainer()->GetItem())
+				{
+					unWearableRegionMask = pWearable->GetAttributeContainer()->GetItem()->GetItemDefinition()->GetEquipRegionConflictMask();
+				}
+
+				if (unWearableRegionMask & unNewItemRegionMask)
+				{
+					RemoveWearable(pWearable);
+				}
+			}
+		}
+		else
+		{
+			CBaseEntity* pEntity = GetEntityForLoadoutSlot(iSlot);
+			if (pEntity)
+			{
+				CBaseCombatWeapon* pWpn = dynamic_cast<CBaseCombatWeapon*>(pEntity);
+				Weapon_Detach(pWpn);
+				UTIL_Remove(pEntity);
+			}
+		}
+
+		// Fake global id
+		pScriptItem->SetItemID(1);
+
+		DispatchSpawn(pItem);
+
+		CEconEntity* pNewItem = assert_cast<CEconEntity*>(pItem);
+		if (pNewItem)
+		{
+			pNewItem->GiveTo(this);
+		}
+
+		PostInventoryApplication();
+	}
+	else
+	{
+		if (pszItemName && pszItemName[0])
+		{
+			DevMsg("CTFBotSpawner::AddItemToBot: Invalid item %s.\n", pszItemName);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

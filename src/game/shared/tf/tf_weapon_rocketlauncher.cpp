@@ -114,6 +114,8 @@ END_NETWORK_TABLE()
 BEGIN_PREDICTION_DATA( CTFRocketLauncher_Mortar )
 END_PREDICTION_DATA()
 
+LINK_ENTITY_TO_CLASS(tf_weapon_rocketlauncher_mortar, CTFRocketLauncher_Mortar);
+PRECACHE_WEAPON_REGISTER(tf_weapon_rocketlauncher_mortar);
 
 // Server specific.
 #ifndef CLIENT_DLL
@@ -600,12 +602,14 @@ void CTFRocketLauncher_Mortar::SecondaryAttack( void )
 void CTFRocketLauncher_Mortar::ItemPostFrame( void )
 {
 #ifdef GAME_DLL
-	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
-	if ( pOwner && pOwner->m_nButtons & IN_ATTACK2 )
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+	if (pOwner && pOwner->m_nButtons & IN_ATTACK2)
 	{
 		// If allowed
-		RedirectRockets();
+		// not here
+		//RedirectRockets();
 	}
+	RedirectRockets();
 #endif
 	BaseClass::ItemPostFrame();
 }
@@ -618,13 +622,15 @@ void CTFRocketLauncher_Mortar::ItemBusyFrame( void )
 	if ( pOwner && pOwner->m_nButtons & IN_ATTACK2 )
 	{
 		// If allowed
-		RedirectRockets();
+		// not here
+		//RedirectRockets();
 	}
+	RedirectRockets();
 #endif
 	BaseClass::ItemBusyFrame();
 }
 
-
+ 
 //-----------------------------------------------------------------------------
 void CTFRocketLauncher_Mortar::RedirectRockets( void )
 {
@@ -665,8 +671,6 @@ void CTFRocketLauncher_Mortar::RedirectRockets( void )
 		QAngle newAngles;
 		VectorAngles( -vecDir, newAngles );
 		pRocket->SetAbsAngles( newAngles );
-
-		m_vecRockets.Remove( i );
 	}
 #endif
 }

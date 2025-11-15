@@ -828,7 +828,7 @@ bool CServerGameDLL::ReplayInit( CreateInterfaceFn fnReplayFactory )
 //-----------------------------------------------------------------------------
 float CServerGameDLL::GetTickInterval( void ) const
 {
-	float tickinterval = DEFAULT_TICK_INTERVAL;
+	float tickinterval = 0.005f;
 
 //=============================================================================
 // HPE_BEGIN:
