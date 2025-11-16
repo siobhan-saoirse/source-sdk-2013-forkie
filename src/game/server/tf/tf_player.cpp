@@ -4250,6 +4250,16 @@ void CTFPlayer::SendOffHandViewModelActivity( Activity activity )
 void CTFPlayer::GiveDefaultItems()
 {
 	// Get the player class data.
+	if (IsBot()) {
+		if (!TFGameRules()->IsMannVsMachineMode() || TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
+			// Weapons that added greater ammo than base require us to now fill the player up to max ammo
+			for (int iAmmo = 0; iAmmo < TF_AMMO_COUNT; ++iAmmo)
+			{
+				GiveAmmo(GetMaxAmmo(iAmmo), iAmmo, true, kAmmoSource_Resupply);
+			}
+			return;
+		}
+	}
 	TFPlayerClassData_t *pData = m_PlayerClass.GetData();
 	if ( GetTeamNumber() == TEAM_SPECTATOR )
 	{
@@ -5397,27 +5407,6 @@ void CTFPlayer::PostInventoryApplication( void )
 	m_iPlayerSkinOverride = iPlayerSkinOverride;
 
 	m_Inventory.ClearClassLoadoutChangeTracking();
-
-
-	if (IsBot()) {
-
-		CTFBot* bot = ToTFBot(this);
-		if (bot) {
-			if (!TFGameRules()->IsMannVsMachineMode() || TFGameRules()->IsMannVsMachineMode() && GetTeamNumber() == TF_TEAM_PVE_DEFENDERS) {
-				RemoveAllItems();
-				bot->GiveRandomItem(LOADOUT_POSITION_PRIMARY);
-				bot->GiveRandomItem(LOADOUT_POSITION_SECONDARY);
-				bot->GiveRandomItem(LOADOUT_POSITION_MELEE);
-				bot->GiveRandomItem(LOADOUT_POSITION_HEAD);
-				bot->GiveRandomItem(LOADOUT_POSITION_MISC);
-				bot->GiveRandomItem(LOADOUT_POSITION_MISC2);
-				bot->GiveRandomItem(LOADOUT_POSITION_BUILDING);
-				bot->GiveRandomItem(LOADOUT_POSITION_PDA);
-				bot->GiveRandomItem(LOADOUT_POSITION_PDA2);
-			}
-		}
-
-	}
 }
 
 //-----------------------------------------------------------------------------

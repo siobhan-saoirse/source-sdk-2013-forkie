@@ -1260,7 +1260,7 @@ void CTFMatchmakingDashboard::UpdateFindAGameButton()
 
 void CTFMatchmakingDashboard::UpdateDisconnectAndResume()
 {
-	bool bInGame = engine->IsInGame();
+	bool bInGame = engine->IsInGame() && !engine->IsLevelMainMenuBackground();
 
 	m_pResumeButton->SetVisible( bInGame && !BInEndOfMatch() );
 

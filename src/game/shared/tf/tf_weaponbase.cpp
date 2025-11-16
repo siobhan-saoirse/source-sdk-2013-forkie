@@ -1878,6 +1878,7 @@ float CTFWeaponBase::ApplyFireDelay( float flDelay ) const
 	float flDelayMult = 1.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flDelayMult, mult_postfiredelay );
 
+
 	float flComboBoost = 0.0f;
 	CALL_ATTRIB_HOOK_FLOAT( flComboBoost, kill_combo_fire_rate_boost );
 	flComboBoost *= GetKillComboCount();
@@ -1886,6 +1887,13 @@ float CTFWeaponBase::ApplyFireDelay( float flDelay ) const
 
 	// Haste Powerup Rune adds multiplier to fire delay time. Flare guns get double boost
 	CTFPlayer *pPlayer = ToTFPlayer( GetPlayerOwner() );
+	float flReducedHealthBonus = 1.0f;
+	CALL_ATTRIB_HOOK_FLOAT(flReducedHealthBonus, mult_postfiredelay_with_reduced_health);
+	if (flReducedHealthBonus != 1.0f)
+	{
+		flReducedHealthBonus = RemapValClamped(pPlayer->HealthFraction(), 0.2f, 0.9f, flReducedHealthBonus, 1.0f);
+		flDelayMult *= flReducedHealthBonus;
+	}
 	if ( pPlayer && pPlayer->m_Shared.GetCarryingRuneType() == RUNE_HASTE )
 	{
 		if ( pPlayer->IsPlayerClass( TF_CLASS_PYRO ) && GetWeaponID() == TF_WEAPON_FLAREGUN )

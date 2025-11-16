@@ -762,22 +762,6 @@ void CAI_FollowBehavior::GatherConditions( void )
 	}
 #endif
 
-#ifdef HL2_EPISODIC
-	// Let followers know if the player is lit in the darkness
-	if ( GetFollowTarget()->IsPlayer() && HL2GameRules()->IsAlyxInDarknessMode() )
-	{
-		if ( LookerCouldSeeTargetInDarkness( GetOuter(), GetFollowTarget() ) )
-		{
-			SetCondition( COND_FOLLOW_PLAYER_IS_LIT );
-			ClearCondition( COND_FOLLOW_PLAYER_IS_NOT_LIT );
-		}
-		else
-		{
-			SetCondition( COND_FOLLOW_PLAYER_IS_NOT_LIT );
-			ClearCondition( COND_FOLLOW_PLAYER_IS_LIT );
-		}
-	}
-#endif
 
 	// Set our follow target visibility state
 	if ( (GetFollowTarget()->IsPlayer() && HasCondition( COND_SEE_PLAYER )) || GetOuter()->FVisible( GetFollowTarget()) )

@@ -3831,7 +3831,7 @@ void CBaseObject::InputDisable( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 int CBaseObject::GetMaxHealthForCurrentLevel( void )
 {
-	int iMaxHealth = IsMiniBuilding() ? GetMiniBuildingStartingHealth() : GetBaseHealth();
+	int iMaxHealth = IsMiniBuilding() && !CanBeUpgraded() ? GetMiniBuildingStartingHealth() : GetBaseHealth();
 	if ( GetOwner() && !m_bDisposableBuilding )
 	{
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwner(), iMaxHealth, mult_engy_building_health );

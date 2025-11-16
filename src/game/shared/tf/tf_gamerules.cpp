@@ -14006,47 +14006,53 @@ CTFPlayer *CTFGameRules::GetRecentDamager( CTFPlayer *pVictim, int iDamager, flo
 //-----------------------------------------------------------------------------
 CBasePlayer *CTFGameRules::GetDeathScorer( CBaseEntity *pKiller, CBaseEntity *pInflictor, CBaseEntity *pVictim )
 {
-	if (!pKiller->IsPlayer() || pKiller == NULL)
-		return NULL;
+	try {
 
-	if ( ( pKiller == pVictim ) && ( pKiller == pInflictor ) )
-	{
-		// If this was an explicit suicide, see if there was a damager within a certain time window.  If so, award this as a kill to the damager.
-		CTFPlayer *pTFVictim = ToTFPlayer( pVictim );
-		if ( pTFVictim )
+		if (!pKiller->IsPlayer() || pKiller == NULL || pKiller == nullptr)
+			return NULL;
+
+		if ((pKiller == pVictim) && (pKiller == pInflictor))
 		{
-			CTFPlayer *pRecentDamager = GetRecentDamager( pTFVictim, 0, TF_TIME_SUICIDE_KILL_CREDIT );
-			if ( pRecentDamager )
-				return pRecentDamager;
-		}
-	}
-
-	//Handle Pyro's Deflection credit.
-	CTFWeaponBaseGrenadeProj *pBaseGrenade = dynamic_cast<CTFWeaponBaseGrenadeProj*>( pInflictor );
-
-	if ( pBaseGrenade )
-	{
-		if ( pBaseGrenade->GetDeflected() )
-		{
-			if ( pBaseGrenade->GetWeaponID() == TF_WEAPON_GRENADE_PIPEBOMB )
+			// If this was an explicit suicide, see if there was a damager within a certain time window.  If so, award this as a kill to the damager.
+			CTFPlayer* pTFVictim = ToTFPlayer(pVictim);
+			if (pTFVictim)
 			{
-				CTFPlayer *pDeflectOwner = ToTFPlayer( pBaseGrenade->GetDeflectOwner() );
+				CTFPlayer* pRecentDamager = GetRecentDamager(pTFVictim, 0, TF_TIME_SUICIDE_KILL_CREDIT);
+				if (pRecentDamager)
+					return pRecentDamager;
+			}
+		}
 
-				if ( pDeflectOwner )
+		//Handle Pyro's Deflection credit.
+		CTFWeaponBaseGrenadeProj* pBaseGrenade = dynamic_cast<CTFWeaponBaseGrenadeProj*>(pInflictor);
+
+		if (pBaseGrenade)
+		{
+			if (pBaseGrenade->GetDeflected())
+			{
+				if (pBaseGrenade->GetWeaponID() == TF_WEAPON_GRENADE_PIPEBOMB)
 				{
-					if ( pDeflectOwner->InSameTeam( pVictim ) == false )
-						 return pDeflectOwner;
-					else
+					CTFPlayer* pDeflectOwner = ToTFPlayer(pBaseGrenade->GetDeflectOwner());
+
+					if (pDeflectOwner)
 					{
-						pBaseGrenade->ResetDeflected();
-						pBaseGrenade->SetDeflectOwner( NULL );
+						if (pDeflectOwner->InSameTeam(pVictim) == false)
+							return pDeflectOwner;
+						else
+						{
+							pBaseGrenade->ResetDeflected();
+							pBaseGrenade->SetDeflectOwner(NULL);
+						}
 					}
 				}
 			}
 		}
-	}
 
-	return BaseClass::GetDeathScorer( pKiller, pInflictor, pVictim );
+		return BaseClass::GetDeathScorer(pKiller, pInflictor, pVictim);
+	}
+	catch (...) {
+		return NULL;
+	}
 }
 
 //-----------------------------------------------------------------------------

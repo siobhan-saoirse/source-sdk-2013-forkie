@@ -103,13 +103,7 @@ void CTFWeaponBaseGun::PrimaryAttack( void )
 	CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pPlayer, flFireDelay, hwn_mult_postfiredelay );
 
 	// Some weapons change fire delay based on player's health
-	float flReducedHealthBonus = 1.0f;
-	CALL_ATTRIB_HOOK_FLOAT( flReducedHealthBonus, mult_postfiredelay_with_reduced_health );
-	if ( flReducedHealthBonus != 1.0f )
-	{
-		flReducedHealthBonus = RemapValClamped( pPlayer->HealthFraction(), 0.2f, 0.9f, flReducedHealthBonus, 1.0f );
-		flFireDelay *= flReducedHealthBonus;
-	}
+	// moved to tf_weaponbase.cpp so it also works with melee weapons
 
 	if ( pPlayer->m_Shared.InCond( TF_COND_BLASTJUMPING ) )
 	{

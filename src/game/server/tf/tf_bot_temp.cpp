@@ -1379,48 +1379,58 @@ CON_COMMAND_F( bot_teleport, "Teleport the specified bot to the specified positi
 	}
 	
 }
-
 //------------------------------------------------------------------------------
 // Purpose: Force the specified bot to create & equip an item
 //------------------------------------------------------------------------------
-void BotGenerateAndWearItem( CTFPlayer *pBot, const char *itemName )
+void BotGenerateAndWearItem(CTFPlayer* pBot, const char* itemName)
 {
-	if ( !pBot )
+	if (!pBot)
 		return;
 
 	CItemSelectionCriteria criteria;
-	criteria.SetItemLevel( AE_USE_SCRIPT_VALUE );
-	criteria.SetQuality( AE_USE_SCRIPT_VALUE );
-	criteria.BAddCondition( "name", k_EOperator_String_EQ, itemName, true );
+	criteria.SetItemLevel(AE_USE_SCRIPT_VALUE);
+	criteria.SetQuality(AE_USE_SCRIPT_VALUE);
+	criteria.BAddCondition("name", k_EOperator_String_EQ, itemName, true);
 
-	CBaseEntity *pItem = ItemGeneration()->GenerateRandomItem( &criteria, pBot->GetAbsOrigin(), vec3_angle );
-	if ( pItem )
+	CBaseEntity* pItem = nullptr;
+
+	// Retry protection to avoid infinite loop on invalid item name
+	const int nMaxAttempts = 20;
+	int nAttempts = 0;
+
+	while (nAttempts < nMaxAttempts)
 	{
-		// If it's a weapon, remove the current one, and give us this one.
-		CBaseEntity	*pExisting = pBot->Weapon_OwnsThisType(pItem->GetClassname());
-		if ( pExisting )
+		pItem = ItemGeneration()->GenerateRandomItem(&criteria, pBot->GetAbsOrigin(), vec3_angle);
+
+		if (pItem)
 		{
-			CBaseCombatWeapon *pWpn = dynamic_cast<CBaseCombatWeapon *>(pExisting);
-			pBot->Weapon_Detach( pWpn );
-			UTIL_Remove( pExisting );
+			// If it's a weapon, remove the current one, and give us this one.
+			if (CBaseEntity* pExisting = pBot->Weapon_OwnsThisType(pItem->GetClassname()))
+			{
+				if (CBaseCombatWeapon* pWpn = dynamic_cast<CBaseCombatWeapon*>(pExisting))
+				{
+					pBot->Weapon_Detach(pWpn);
+				}
+				UTIL_Remove(pExisting);
+			}
+
+			// Fake global id
+			static int s_nFakeID = 1;
+			static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem()->SetItemID(s_nFakeID++);
+
+			DispatchSpawn(pItem);
+			static_cast<CEconEntity*>(pItem)->GiveTo(pBot);
+
+			pBot->PostInventoryApplication();
+			nAttempts = 20;
 		}
-
-		// Fake global id
-		static int s_nFakeID = 1;
-		static_cast<CEconEntity*>(pItem)->GetAttributeContainer()->GetItem()->SetItemID( s_nFakeID++ );
-
-		DispatchSpawn( pItem );
-		static_cast<CEconEntity*>(pItem)->GiveTo( pBot );
-
-		pBot->PostInventoryApplication();
-	}
-	else
-	{
+		else
 		{
-			Msg( "Failed to create an item named %s\n", itemName );
+			nAttempts++;
 		}
 	}
 }
+
 
 void BotGenerateAndWearItem( CTFPlayer *pBot, CEconItemView *pItem )
 {
